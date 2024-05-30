@@ -1,49 +1,72 @@
-const DIMENSIONS = {
-  width: 15,
-  height: 15,
-};
-
-const ROW_HEIGHT = `${(100 / DIMENSIONS.height).toString()}%`;
-const CELL_WIDTH = `${(100 / DIMENSIONS.width).toString()}%`;
+import { useEffect, useRef, useState } from "react";
+import {
+  BOARD_DIMENSIONS,
+  DIRECTION,
+  INITIAL_SNAKE_CELLS,
+  ROW_HEIGHT,
+} from "../constants";
+import useSnakeControls from "../hooks/useSnakeControls";
+import GameBoardCell from "./GameBoardCell";
 
 const GameBoard = () => {
-  const renderGameBoardCell = ({
-    rowIndex,
-    index,
-  }: {
-    rowIndex: number;
-    index: number;
-  }) => {
-    const evenRow = rowIndex % 2 === 0;
-    const evenCell = index % 2 === 0;
-    const darkerCell = evenRow ? evenCell : !evenCell;
+  const [snakeCells, setSnakeCells] = useState(INITIAL_SNAKE_CELLS);
+  const { moveSnake } = useSnakeControls({ setSnakeCells });
 
-    return (
-      <div
-        key={index}
-        className={`h-full ${darkerCell ? 'bg-green-200' : 'bg-green-100'} `}
-        style={{ width: CELL_WIDTH }}
-      ></div>
-    );
-  };
+  const directionRef = useRef<DIRECTION>(DIRECTION.RIGHT);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      moveSnake(directionRef.current);
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [moveSnake]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      switch (event.key) {
+        case "ArrowUp":
+          directionRef.current = DIRECTION.UP;
+          break;
+        case "ArrowDown":
+          directionRef.current = DIRECTION.DOWN;
+          break;
+        case "ArrowLeft":
+          directionRef.current = DIRECTION.LEFT;
+          break;
+        case "ArrowRight":
+          directionRef.current = DIRECTION.RIGHT;
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const renderGameBoardRow = ({ rowIndex }: { rowIndex: number }) => {
     return (
       <div
         key={rowIndex}
-        className='w-full flex'
+        className="w-full flex"
         style={{ height: ROW_HEIGHT }}
       >
-        {Array.from({ length: DIMENSIONS.width }).map((_, index) =>
-          renderGameBoardCell({ rowIndex, index })
-        )}
+        {Array.from({ length: BOARD_DIMENSIONS.width }).map((_, index) => (
+          <GameBoardCell
+            key={index}
+            snakeCells={snakeCells}
+            rowIndex={rowIndex}
+            cellIndex={index}
+          />
+        ))}
       </div>
     );
   };
 
   return (
-    <div className='w-full h-full mx-auto aspect-square max-w-[650px] max-h-[650px]'>
-      {Array.from({ length: DIMENSIONS.height }).map((_, index) =>
+    <div className="w-full h-full mx-auto aspect-square max-w-[500px] max-h-[500px]">
+      {Array.from({ length: BOARD_DIMENSIONS.height }).map((_, index) =>
         renderGameBoardRow({ rowIndex: index })
       )}
     </div>
