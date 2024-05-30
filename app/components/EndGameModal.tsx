@@ -7,8 +7,7 @@ import {
   ModalHeader,
 } from '@nextui-org/modal';
 import { useRouter } from 'next/navigation';
-
-export const MAX_SCORE = 251 as const;
+import { MAX_SCORE } from '../constants';
 
 type Props = {
   isOpen: boolean;

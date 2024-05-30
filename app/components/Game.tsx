@@ -15,7 +15,6 @@ const Game = () => {
 
   return (
     <>
-      <h1>Game</h1>
       {name && !isOpen && <GameBoard />}
       <WelcomeModal
         isOpen={isOpen}

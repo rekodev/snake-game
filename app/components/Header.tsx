@@ -1,6 +1,5 @@
 'use client';
 
-import { Button } from '@nextui-org/button';
 import {
   Navbar,
   NavbarBrand,
@@ -10,6 +9,7 @@ import {
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AcmeLogo } from './AcmeLogo';
+import { ThemeSwitcher } from './ThemeSwitcher';
 
 const navLinks = [
   {
@@ -45,13 +45,8 @@ const Header = () => {
         ))}
       </NavbarContent>
       <NavbarContent justify='end'>
-        <NavbarItem className='hidden lg:flex'>
-          <Link href='#'>Login</Link>
-        </NavbarItem>
         <NavbarItem>
-          <Button as={Link} color='primary' href='#' variant='flat'>
-            Sign Up
-          </Button>
+          <ThemeSwitcher />
         </NavbarItem>
       </NavbarContent>
     </Navbar>
