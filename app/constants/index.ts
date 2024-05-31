@@ -1,8 +1,8 @@
-export enum DIRECTION {
-  UP = 'UP',
-  DOWN = 'DOWN',
-  LEFT = 'LEFT',
-  RIGHT = 'RIGHT',
+export enum Direction {
+  Up = "up",
+  Down = "down",
+  Left = "left",
+  Right = "right",
 }
 
 export const GAME_SPEED = 135 as const;

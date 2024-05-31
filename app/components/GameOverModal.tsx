@@ -1,13 +1,13 @@
-import { Button } from '@nextui-org/button';
+import { Button } from "@nextui-org/button";
 import {
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from '@nextui-org/modal';
-import { useRouter } from 'next/navigation';
-import { MAX_SCORE } from '../constants';
+} from "@nextui-org/modal";
+import { useRouter } from "next/navigation";
+import { MAX_SCORE } from "../constants";
 
 type Props = {
   isOpen: boolean;
@@ -16,23 +16,23 @@ type Props = {
   name: string;
 };
 
-const EndGameModal = ({ isOpen, onOpenChange, score, name }: Props) => {
+const GameOverModal = ({ isOpen, onOpenChange, score, name }: Props) => {
   const router = useRouter();
 
   // TODO: Hook up the submit logic
   const handleSubmit = async () => {
     try {
-      const res = await fetch('/api/scores', {
-        method: 'POST',
+      const res = await fetch("/api/scores", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ name, score }),
       });
 
       if (res.ok) {
         onOpenChange(false);
-        router.push('/scores');
+        router.push("/scores");
       }
     } catch (error) {
       console.error(error);
@@ -45,18 +45,18 @@ const EndGameModal = ({ isOpen, onOpenChange, score, name }: Props) => {
         {(onClose) => (
           <>
             <ModalHeader>
-              {score === MAX_SCORE ? 'You Beat the Game!' : 'Game Over'}
+              {score === MAX_SCORE ? "You Beat the Game!" : "Game Over"}
             </ModalHeader>
             <ModalBody>
               <p>
-                Your score is: <span className=' font-medium'>{score}</span>
+                Your score is: <span className=" font-medium">{score}</span>
               </p>
             </ModalBody>
             <ModalFooter>
-              <Button color='secondary' onPress={onClose}>
+              <Button color="secondary" onPress={onClose}>
                 Play Again
               </Button>
-              <Button color='success' onPress={onClose}>
+              <Button color="success" onPress={onClose}>
                 Submit
               </Button>
             </ModalFooter>
@@ -67,4 +67,4 @@ const EndGameModal = ({ isOpen, onOpenChange, score, name }: Props) => {
   );
 };
 
-export default EndGameModal;
+export default GameOverModal;
