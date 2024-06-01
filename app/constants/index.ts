@@ -1,17 +1,17 @@
 export enum Direction {
-  Up = 'up',
-  Down = 'down',
-  Left = 'left',
-  Right = 'right',
+  Up = "up",
+  Down = "down",
+  Left = "left",
+  Right = "right",
 }
 
 export enum BodyCellPositioning {
-  Horizontal = 'horizontal',
-  Vertical = 'vertical',
-  TopRight = 'topRight',
-  TopLeft = 'topLeft',
-  BottomRight = 'bottomRight',
-  BottomLeft = 'bottomLeft',
+  Horizontal = "horizontal",
+  Vertical = "vertical",
+  TopRight = "topRight",
+  TopLeft = "topLeft",
+  BottomRight = "bottomRight",
+  BottomLeft = "bottomLeft",
 }
 
 export const GAME_SPEED = 135 as const;

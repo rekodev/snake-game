@@ -1,1 +1,1 @@
-export type SnakeCells = Array<{ x: number; y: number }>;
+export type GameCell = { x: number; y: number };

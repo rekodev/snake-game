@@ -1,11 +1,11 @@
-import { Dispatch, SetStateAction, useCallback } from 'react';
-import { Direction } from '../constants';
-import { SnakeCells } from '../types';
+import { Dispatch, SetStateAction, useCallback } from "react";
+import { Direction } from "../constants";
+import { GameCell } from "../types";
 
 const useSnakeControls = ({
   setSnakeCells,
 }: {
-  setSnakeCells: Dispatch<SetStateAction<SnakeCells>>;
+  setSnakeCells: Dispatch<SetStateAction<Array<GameCell>>>;
 }) => {
   const moveSnake = useCallback(
     (direction: Direction) => {
