@@ -1,6 +1,7 @@
-import { useEffect } from "react";
-import { CELL_WIDTH } from "../constants";
-import { SnakeCells } from "../types";
+import Image from 'next/image';
+import { useEffect } from 'react';
+import { CELL_WIDTH, Direction } from '../constants';
+import SnakeCell from './SnakeCell';
 
 export const DIMENSIONS = {
   width: 15,
@@ -13,6 +14,7 @@ type Props = {
   cellIndex: number;
   foodCell: { x: number; y: number };
   onEatFood: () => void;
+  direction: Direction;
 };
 
 const GameBoardCell = ({
@@ -21,21 +23,22 @@ const GameBoardCell = ({
   cellIndex,
   foodCell,
   onEatFood,
+  direction,
 }: Props) => {
   const evenRow = rowIndex % 2 === 0;
   const evenCell = cellIndex % 2 === 0;
-  const snakeCell = snakeCells.some(
-    (cell) => cell.x === rowIndex && cell.y === cellIndex
-  );
   const darkerCell = evenRow ? evenCell : !evenCell;
 
+  const isSnakeCell = snakeCells.some(
+    (cell) => cell.y === rowIndex && cell.x === cellIndex
+  );
   const firstSnakeCell = snakeCells[0];
   const lastSnakeCell = snakeCells[snakeCells.length - 1];
 
   const isTail =
-    firstSnakeCell.x === rowIndex && firstSnakeCell.y === cellIndex;
-  const isHead = lastSnakeCell.x === rowIndex && lastSnakeCell.y === cellIndex;
-  const isFoodCell = foodCell.x === rowIndex && foodCell.y === cellIndex;
+    firstSnakeCell.x === cellIndex && firstSnakeCell.y === rowIndex;
+  const isHead = lastSnakeCell.x === cellIndex && lastSnakeCell.y === rowIndex;
+  const isFoodCell = foodCell.x === cellIndex && foodCell.y === rowIndex;
 
   useEffect(() => {
     if (!isFoodCell || !isHead) return;
@@ -43,16 +46,31 @@ const GameBoardCell = ({
     onEatFood();
   }, [isFoodCell, isHead, onEatFood]);
 
+  const renderCellImage = (src: string, alt: string) => (
+    <Image sizes='33' src={src} alt={alt} fill className='object-contain' />
+  );
+
   return (
     <div
       key={cellIndex}
-      className={`h-full ${
-        snakeCell ? "bg-gray-700" : darkerCell ? "bg-green-200" : "bg-green-100"
-      } ${isHead ? "bg-green-800" : ""} ${isTail ? "bg-gray-400" : ""} ${
-        isFoodCell ? "bg-red-500 rounded-full" : ""
+      className={`relative h-full ${
+        darkerCell ? 'bg-green-200' : 'bg-green-100'
       }`}
       style={{ width: CELL_WIDTH }}
-    ></div>
+    >
+      {isFoodCell && renderCellImage('/images/apple.png', 'Apple')}
+      {isSnakeCell && (
+        <SnakeCell
+          rowIndex={rowIndex}
+          cellIndex={cellIndex}
+          direction={direction}
+          isHead={isHead}
+          isTail={isTail}
+          snakeCells={snakeCells}
+          renderCellImage={renderCellImage}
+        />
+      )}
+    </div>
   );
 };
 

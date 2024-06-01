@@ -1,6 +1,6 @@
-import { Dispatch, SetStateAction, useCallback } from "react";
-import { Direction } from "../constants";
-import { SnakeCells } from "../types";
+import { Dispatch, SetStateAction, useCallback } from 'react';
+import { Direction } from '../constants';
+import { SnakeCells } from '../types';
 
 const useSnakeControls = ({
   setSnakeCells,
@@ -17,26 +17,26 @@ const useSnakeControls = ({
         switch (direction) {
           case Direction.Up:
             newHead = {
-              x: lastSnakeCell.x - 1,
-              y: lastSnakeCell.y,
-            };
-            break;
-          case Direction.Down:
-            newHead = {
-              x: lastSnakeCell.x + 1,
-              y: lastSnakeCell.y,
-            };
-            break;
-          case Direction.Left:
-            newHead = {
               x: lastSnakeCell.x,
               y: lastSnakeCell.y - 1,
             };
             break;
-          case Direction.Right:
+          case Direction.Down:
             newHead = {
               x: lastSnakeCell.x,
               y: lastSnakeCell.y + 1,
+            };
+            break;
+          case Direction.Left:
+            newHead = {
+              x: lastSnakeCell.x - 1,
+              y: lastSnakeCell.y,
+            };
+            break;
+          case Direction.Right:
+            newHead = {
+              x: lastSnakeCell.x + 1,
+              y: lastSnakeCell.y,
             };
             break;
         }

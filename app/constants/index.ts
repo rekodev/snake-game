@@ -1,8 +1,17 @@
 export enum Direction {
-  Up = "up",
-  Down = "down",
-  Left = "left",
-  Right = "right",
+  Up = 'up',
+  Down = 'down',
+  Left = 'left',
+  Right = 'right',
+}
+
+export enum BodyCellPositioning {
+  Horizontal = 'horizontal',
+  Vertical = 'vertical',
+  TopRight = 'topRight',
+  TopLeft = 'topLeft',
+  BottomRight = 'bottomRight',
+  BottomLeft = 'bottomLeft',
 }
 
 export const GAME_SPEED = 135 as const;
@@ -20,10 +29,10 @@ export const CELL_WIDTH = `${(
 ).toString()}%` as const;
 
 export const INITIAL_SNAKE_CELLS = [
-  { x: 7, y: 1 },
-  { x: 7, y: 2 },
-  { x: 7, y: 3 },
-  { x: 7, y: 4 },
+  { y: 7, x: 1 },
+  { y: 7, x: 2 },
+  { y: 7, x: 3 },
+  { y: 7, x: 4 },
 ];
 
 export const MAX_SCORE =
