@@ -28,6 +28,7 @@ export const CELL_WIDTH = `${(
   100 / BOARD_DIMENSIONS.width
 ).toString()}%` as const;
 
+export const INITIAL_FOOD_CELL = { x: 12, y: 7 };
 export const INITIAL_SNAKE_CELLS = [
   { y: 7, x: 1 },
   { y: 7, x: 2 },

@@ -14,9 +14,16 @@ type Props = {
   onOpenChange: (isOpen: boolean) => void;
   score: number;
   name: string;
+  onPlayAgain: () => void;
 };
 
-const GameOverModal = ({ isOpen, onOpenChange, score, name }: Props) => {
+const GameOverModal = ({
+  isOpen,
+  onOpenChange,
+  score,
+  name,
+  onPlayAgain,
+}: Props) => {
   const router = useRouter();
 
   // TODO: Hook up the submit logic
@@ -53,7 +60,13 @@ const GameOverModal = ({ isOpen, onOpenChange, score, name }: Props) => {
               </p>
             </ModalBody>
             <ModalFooter>
-              <Button color="secondary" onPress={onClose}>
+              <Button
+                color="secondary"
+                onPress={() => {
+                  onClose();
+                  onPlayAgain();
+                }}
+              >
                 Play Again
               </Button>
               <Button color="success" onPress={onClose}>

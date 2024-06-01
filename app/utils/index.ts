@@ -1,10 +1,10 @@
 import { GameCell } from "../types";
-import { DIMENSIONS } from "../components/GameBoardCell";
+import { BOARD_DIMENSIONS } from "../constants";
 import { BodyCellPositioning, Direction } from "../constants";
 
 export const generateNewFoodCell = (snakeCells: Array<GameCell>): GameCell => {
-  const x = Math.floor(Math.random() * DIMENSIONS.height);
-  const y = Math.floor(Math.random() * DIMENSIONS.width);
+  const x = Math.floor(Math.random() * BOARD_DIMENSIONS.height);
+  const y = Math.floor(Math.random() * BOARD_DIMENSIONS.width);
 
   const isSnakeCell = snakeCells.some((cell) => cell.x === x && cell.y === y);
 
