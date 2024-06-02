@@ -1,88 +1,82 @@
-import { useEffect, useRef, useState } from 'react';
-import {
-  BOARD_DIMENSIONS,
-  DIRECTION,
-  GAME_SPEED,
-  INITIAL_SNAKE_CELLS,
-  ROW_HEIGHT,
-} from '../constants';
-import useSnakeControls from '../hooks/useSnakeControls';
+import { useCallback } from 'react';
+import { BOARD_DIMENSIONS, Direction, ROW_HEIGHT } from '../constants';
+import { GameCell } from '../types';
+import { determineTailDirection, generateNewFoodCell } from '../utils';
 import GameBoardCell from './GameBoardCell';
+import GamePausedOverlay from './GamePausedOverlay';
 
-const GameBoard = () => {
-  const [gameStarted, setGameStarted] = useState(false);
-  const [snakeCells, setSnakeCells] = useState(INITIAL_SNAKE_CELLS);
-  const { moveSnake } = useSnakeControls({ setSnakeCells });
+type Props = {
+  score: number;
+  setScore: (score: number) => void;
+  snakeCells: Array<GameCell>;
+  setSnakeCells: (snakeCells: Array<GameCell>) => void;
+  isGamePaused: boolean;
+  direction: Direction;
+  onGameOver: () => void;
+  foodCell: GameCell;
+  setFoodCell: (foodCell: GameCell) => void;
+};
 
-  const directionRef = useRef<DIRECTION>(DIRECTION.RIGHT);
+const GameBoard = ({
+  snakeCells,
+  setSnakeCells,
+  score,
+  setScore,
+  isGamePaused,
+  direction,
+  onGameOver,
+  foodCell,
+  setFoodCell,
+}: Props) => {
+  const eatFood = useCallback(() => {
+    const newSnakeCells = [...snakeCells];
+    const tail = newSnakeCells[0];
+    const tailDirection = determineTailDirection(newSnakeCells);
 
-  useEffect(() => {
-    if (!gameStarted) return;
+    switch (tailDirection) {
+      case Direction.Up:
+        newSnakeCells.unshift({ x: tail.x, y: tail.y - 1 });
+        break;
+      case Direction.Down:
+        newSnakeCells.unshift({ x: tail.x, y: tail.y + 1 });
+        break;
+      case Direction.Left:
+        newSnakeCells.unshift({ x: tail.x - 1, y: tail.y });
+        break;
+      case Direction.Right:
+        newSnakeCells.unshift({ x: tail.x + 1, y: tail.y });
+        break;
+    }
 
-    const intervalId = setInterval(() => {
-      moveSnake(directionRef.current);
-    }, GAME_SPEED);
+    setScore(score + 1);
+    setSnakeCells(newSnakeCells);
+    setFoodCell(generateNewFoodCell(snakeCells));
+  }, [score, setScore, snakeCells, setSnakeCells, setFoodCell]);
 
-    return () => clearInterval(intervalId);
-  }, [gameStarted, moveSnake]);
-
-  useEffect(() => {
-    const startGame = () => {
-      if (gameStarted) return;
-
-      setGameStarted(true);
-    };
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      switch (event.key) {
-        case 'ArrowUp':
-          startGame();
-          directionRef.current = DIRECTION.UP;
-          break;
-        case 'ArrowDown':
-          startGame();
-          directionRef.current = DIRECTION.DOWN;
-          break;
-        case 'ArrowLeft':
-          startGame();
-          directionRef.current = DIRECTION.LEFT;
-          break;
-        case 'ArrowRight':
-          startGame();
-          directionRef.current = DIRECTION.RIGHT;
-          break;
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [gameStarted]);
-
-  const renderGameBoardRow = ({ rowIndex }: { rowIndex: number }) => {
-    return (
-      <div
-        key={rowIndex}
-        className='w-full flex'
-        style={{ height: ROW_HEIGHT }}
-      >
-        {Array.from({ length: BOARD_DIMENSIONS.width }).map((_, index) => (
-          <GameBoardCell
-            key={index}
-            snakeCells={snakeCells}
-            rowIndex={rowIndex}
-            cellIndex={index}
-          />
-        ))}
-      </div>
-    );
-  };
+  const renderGameBoardRow = ({ rowIndex }: { rowIndex: number }) => (
+    <div key={rowIndex} className='w-full flex' style={{ height: ROW_HEIGHT }}>
+      {Array.from({ length: BOARD_DIMENSIONS.width }).map((_, index) => (
+        <GameBoardCell
+          key={index}
+          snakeCells={snakeCells}
+          foodCell={foodCell}
+          onEatFood={eatFood}
+          rowIndex={rowIndex}
+          cellIndex={index}
+          direction={direction}
+          onGameOver={onGameOver}
+        />
+      ))}
+    </div>
+  );
 
   return (
-    <div className='w-full h-full mx-auto aspect-square max-w-[500px] max-h-[500px]'>
+    <div className='relative w-full h-full mx-auto aspect-square max-w-[500px] max-h-[500px]'>
       {Array.from({ length: BOARD_DIMENSIONS.height }).map((_, index) =>
         renderGameBoardRow({ rowIndex: index })
       )}
+
+      {isGamePaused && <GamePausedOverlay />}
     </div>
   );
 };
