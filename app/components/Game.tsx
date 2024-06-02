@@ -1,7 +1,7 @@
 "use client";
 
 import { useDisclosure } from "@nextui-org/modal";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BOARD_DIMENSIONS,
   Direction,
@@ -20,9 +20,11 @@ const Game = () => {
   const [score, setScore] = useState(0);
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [isGamePaused, setIsGamePaused] = useState(false);
+  const [isGameOver, setIsGameOver] = useState(false);
   const [snakeCells, setSnakeCells] = useState(INITIAL_SNAKE_CELLS);
   const [foodCell, setFoodCell] = useState(INITIAL_FOOD_CELL);
   const [isMoveMade, setIsMoveMade] = useState(false);
+  const [direction, setDirection] = useState(Direction.Right);
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const {
@@ -35,9 +37,13 @@ const Game = () => {
   const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
   const directionRef = useRef<Direction>(Direction.Right);
 
-  const lastSnakeCell = snakeCells[snakeCells.length - 1];
+  const lastSnakeCell = useMemo(
+    () => snakeCells[snakeCells.length - 1],
+    [snakeCells],
+  );
 
   const handleGameOver = useCallback(() => {
+    setIsGameOver(true);
     clearInterval(intervalIdRef.current as NodeJS.Timeout);
     setIsGameStarted(false);
     onGameOverModalOpen();
@@ -61,12 +67,15 @@ const Game = () => {
       }
 
       moveSnake(directionRef.current);
+      setDirection(directionRef.current);
     }, GAME_SPEED);
 
     return () => clearInterval(intervalIdRef.current as NodeJS.Timeout);
   }, [isGameStarted, isGamePaused, moveSnake, lastSnakeCell, handleGameOver]);
 
   useEffect(() => {
+    if (isGameOver) return;
+
     const startGame = () => {
       if (isGameStarted) return;
 
@@ -118,6 +127,7 @@ const Game = () => {
     isGamePaused,
     setIsGamePaused,
     setIsGameStarted,
+    isGameOver,
     isMoveMade,
   ]);
 
@@ -128,14 +138,16 @@ const Game = () => {
   const handlePlayAgain = () => {
     setScore(0);
     directionRef.current = Direction.Right;
+    setDirection(Direction.Right);
     setSnakeCells(INITIAL_SNAKE_CELLS);
     setFoodCell(INITIAL_FOOD_CELL);
+    setIsGameOver(false);
   };
 
   return (
     <>
       {name && !isOpen && (
-        <div className="flex flex-col gap-4 justify-center items-center">
+        <div className="flex flex-col items-center justify-center gap-4">
           <GamePanel
             score={score}
             intervalId={intervalIdRef.current as NodeJS.Timeout}
@@ -148,7 +160,7 @@ const Game = () => {
             snakeCells={snakeCells}
             setSnakeCells={setSnakeCells}
             isGamePaused={isGamePaused}
-            direction={directionRef.current}
+            direction={direction}
             onGameOver={handleGameOver}
             foodCell={foodCell}
             setFoodCell={setFoodCell}

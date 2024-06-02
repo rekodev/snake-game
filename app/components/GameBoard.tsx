@@ -1,8 +1,9 @@
-import { BOARD_DIMENSIONS, Direction, ROW_HEIGHT } from "../constants";
-import { GameCell } from "../types";
-import { determineTailDirection, generateNewFoodCell } from "../utils";
-import GameBoardCell from "./GameBoardCell";
-import GamePausedOverlay from "./GamePausedOverlay";
+import { useCallback } from 'react';
+import { BOARD_DIMENSIONS, Direction, ROW_HEIGHT } from '../constants';
+import { GameCell } from '../types';
+import { determineTailDirection, generateNewFoodCell } from '../utils';
+import GameBoardCell from './GameBoardCell';
+import GamePausedOverlay from './GamePausedOverlay';
 
 type Props = {
   score: number;
@@ -27,7 +28,7 @@ const GameBoard = ({
   foodCell,
   setFoodCell,
 }: Props) => {
-  const eatFood = () => {
+  const eatFood = useCallback(() => {
     const newSnakeCells = [...snakeCells];
     const tail = newSnakeCells[0];
     const tailDirection = determineTailDirection(newSnakeCells);
@@ -50,10 +51,10 @@ const GameBoard = ({
     setScore(score + 1);
     setSnakeCells(newSnakeCells);
     setFoodCell(generateNewFoodCell(snakeCells));
-  };
+  }, [score, setScore, snakeCells, setSnakeCells, setFoodCell]);
 
   const renderGameBoardRow = ({ rowIndex }: { rowIndex: number }) => (
-    <div key={rowIndex} className="w-full flex" style={{ height: ROW_HEIGHT }}>
+    <div key={rowIndex} className='w-full flex' style={{ height: ROW_HEIGHT }}>
       {Array.from({ length: BOARD_DIMENSIONS.width }).map((_, index) => (
         <GameBoardCell
           key={index}
@@ -70,7 +71,7 @@ const GameBoard = ({
   );
 
   return (
-    <div className="relative w-full h-full mx-auto aspect-square max-w-[500px] max-h-[500px]">
+    <div className='relative w-full h-full mx-auto aspect-square max-w-[500px] max-h-[500px]'>
       {Array.from({ length: BOARD_DIMENSIONS.height }).map((_, index) =>
         renderGameBoardRow({ rowIndex: index })
       )}

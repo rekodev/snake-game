@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { useEffect, useMemo } from "react";
-import { BOARD_DIMENSIONS, CELL_WIDTH, Direction } from "../constants";
+import { memo, useEffect, useMemo } from "react";
+import { CELL_WIDTH, Direction } from "../constants";
 import SnakeCell from "./SnakeCell";
 
 type Props = {
@@ -13,7 +13,7 @@ type Props = {
   onGameOver: () => void;
 };
 
-const GameBoardCell = ({
+const GameBoardCell = memo(function GameBoardCell({
   snakeCells,
   rowIndex,
   cellIndex,
@@ -21,7 +21,7 @@ const GameBoardCell = ({
   onEatFood,
   direction,
   onGameOver,
-}: Props) => {
+}: Props) {
   const evenRow = rowIndex % 2 === 0;
   const evenCell = cellIndex % 2 === 0;
   const darkerCell = evenRow ? evenCell : !evenCell;
@@ -29,35 +29,25 @@ const GameBoardCell = ({
   const firstSnakeCell = snakeCells[0];
   const lastSnakeCell = snakeCells[snakeCells.length - 1];
 
-  const headlessSnakeCells = snakeCells.slice(0, -1);
-  const isHeadlessSnakeCell = useMemo(
-    () =>
-      headlessSnakeCells.some(
-        (cell) => cell.y === rowIndex && cell.x === cellIndex
-      ),
-    [headlessSnakeCells, rowIndex, cellIndex]
-  );
-  const isSnakeCell = useMemo(
-    () =>
-      snakeCells.some((cell) => cell.y === rowIndex && cell.x === cellIndex),
-    [snakeCells, rowIndex, cellIndex]
-  );
-
-  const isTail =
-    firstSnakeCell.x === cellIndex && firstSnakeCell.y === rowIndex;
   const isHead = useMemo(
     () => lastSnakeCell.x === cellIndex && lastSnakeCell.y === rowIndex,
-    [lastSnakeCell, cellIndex, rowIndex]
+    [lastSnakeCell, cellIndex, rowIndex],
   );
-  const isFoodCell = foodCell.x === cellIndex && foodCell.y === rowIndex;
-
-  useEffect(() => {
-    if (!isHead) return;
-
-    if (isHead && isHeadlessSnakeCell) {
-      onGameOver();
-    }
-  }, [isHead, isHeadlessSnakeCell, onGameOver]);
+  const isBody = useMemo(
+    () =>
+      snakeCells
+        .slice(1, -1)
+        .some((cell) => cell.y === rowIndex && cell.x === cellIndex),
+    [snakeCells, rowIndex, cellIndex],
+  );
+  const isTail = useMemo(
+    () => firstSnakeCell.x === cellIndex && firstSnakeCell.y === rowIndex,
+    [cellIndex, firstSnakeCell, rowIndex],
+  );
+  const isFoodCell = useMemo(
+    () => foodCell.x === cellIndex && foodCell.y === rowIndex,
+    [foodCell, cellIndex, rowIndex],
+  );
 
   useEffect(() => {
     if (!isFoodCell || !isHead) return;
@@ -65,32 +55,52 @@ const GameBoardCell = ({
     onEatFood();
   }, [isFoodCell, isHead, onEatFood]);
 
+  useEffect(() => {
+    if (!isHead || !(isBody || isTail)) return;
+
+    onGameOver();
+  }, [isBody, isHead, isTail, onGameOver]);
+
   const renderCellImage = (src: string, alt: string) => (
-    <Image sizes="33" src={src} alt={alt} fill className="object-contain" />
+    <Image
+      sizes="100%"
+      quality={50}
+      priority={true}
+      src={src}
+      alt={alt}
+      fill
+      objectFit="contain"
+    />
   );
+
+  const renderSnakeCell = () => {
+    if (!isHead && !isTail && !isBody) return null;
+
+    return (
+      <SnakeCell
+        rowIndex={rowIndex}
+        cellIndex={cellIndex}
+        direction={direction}
+        isHead={isHead}
+        isTail={isTail}
+        snakeCells={snakeCells}
+        renderCellImage={renderCellImage}
+      />
+    );
+  };
 
   return (
     <div
       key={cellIndex}
-      className={`relative h-full ${
+      className={`cell ${
         darkerCell ? "bg-green-200" : "bg-green-100"
-      }`}
+      } relative h-full`}
       style={{ width: CELL_WIDTH }}
     >
       {isFoodCell && renderCellImage("/images/apple.png", "Apple")}
-      {isSnakeCell && (
-        <SnakeCell
-          rowIndex={rowIndex}
-          cellIndex={cellIndex}
-          direction={direction}
-          isHead={isHead}
-          isTail={isTail}
-          snakeCells={snakeCells}
-          renderCellImage={renderCellImage}
-        />
-      )}
+      {renderSnakeCell()}
     </div>
   );
-};
+});
 
 export default GameBoardCell;
