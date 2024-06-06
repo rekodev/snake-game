@@ -1,18 +1,18 @@
-import { useCallback } from 'react';
-import { BOARD_DIMENSIONS, Direction, ROW_HEIGHT } from '../constants';
-import { GameCell } from '../types';
-import { determineTailDirection, generateNewFoodCell } from '../utils';
-import GameBoardCell from './GameBoardCell';
-import GamePausedOverlay from './GamePausedOverlay';
+import { useCallback } from "react";
+import { BOARD_DIMENSIONS, Direction, ROW_HEIGHT } from "../constants";
+import { GameCell } from "../types";
+import { determineTailDirection, generateNewFoodCell } from "../utils";
+import GameBoardCell from "./GameBoardCell";
+import GameOverlay from "./GameOverlay";
 
 type Props = {
   score: number;
   setScore: (score: number) => void;
   snakeCells: Array<GameCell>;
   setSnakeCells: (snakeCells: Array<GameCell>) => void;
+  isGameStarted: boolean;
   isGamePaused: boolean;
   direction: Direction;
-  onGameOver: () => void;
   foodCell: GameCell;
   setFoodCell: (foodCell: GameCell) => void;
 };
@@ -22,9 +22,9 @@ const GameBoard = ({
   setSnakeCells,
   score,
   setScore,
+  isGameStarted,
   isGamePaused,
   direction,
-  onGameOver,
   foodCell,
   setFoodCell,
 }: Props) => {
@@ -54,7 +54,7 @@ const GameBoard = ({
   }, [score, setScore, snakeCells, setSnakeCells, setFoodCell]);
 
   const renderGameBoardRow = ({ rowIndex }: { rowIndex: number }) => (
-    <div key={rowIndex} className='w-full flex' style={{ height: ROW_HEIGHT }}>
+    <div key={rowIndex} className="flex w-full" style={{ height: ROW_HEIGHT }}>
       {Array.from({ length: BOARD_DIMENSIONS.width }).map((_, index) => (
         <GameBoardCell
           key={index}
@@ -64,19 +64,20 @@ const GameBoard = ({
           rowIndex={rowIndex}
           cellIndex={index}
           direction={direction}
-          onGameOver={onGameOver}
         />
       ))}
     </div>
   );
 
   return (
-    <div className='relative w-full h-full mx-auto aspect-square max-w-[500px] max-h-[500px]'>
+    <div className="relative mx-auto aspect-square h-full max-h-[500px] w-full max-w-[500px]">
       {Array.from({ length: BOARD_DIMENSIONS.height }).map((_, index) =>
-        renderGameBoardRow({ rowIndex: index })
+        renderGameBoardRow({ rowIndex: index }),
       )}
 
-      {isGamePaused && <GamePausedOverlay />}
+      {(!isGameStarted || isGamePaused) && (
+        <GameOverlay isGameStarted={isGameStarted} />
+      )}
     </div>
   );
 };
