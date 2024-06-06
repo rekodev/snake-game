@@ -20,51 +20,50 @@ const useGameControls = ({
   useEffect(() => {
     if (isGameOver) return;
 
-    const startGame = () => {
-      if (isGameStarted) return;
+    const handleArrowKeyDown = (
+      direction: Direction,
+      oppositeDirection: Direction,
+    ) => {
+      if (!isGameStarted) setIsGameStarted(true);
 
-      setIsGameStarted(true);
+      if (isGamePaused) return;
+      if (directionRef.current === oppositeDirection || isMoveMade) return;
+
+      directionRef.current = direction;
+      setIsMoveMade(true);
+    };
+
+    const handlePause = () => {
+      if (!isGameStarted) return;
+
+      if (isGamePaused) {
+        setIsGamePaused(false);
+        return;
+      }
+
+      setIsGamePaused(true);
+      clearInterval(intervalIdRef.current as NodeJS.Timeout);
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
       switch (event.key) {
         case "ArrowUp":
-          startGame();
-          if (isGamePaused) break;
-          if (directionRef.current === Direction.Down || isMoveMade) break;
-          directionRef.current = Direction.Up;
-          setIsMoveMade(true);
+          handleArrowKeyDown(Direction.Up, Direction.Down);
           break;
         case "ArrowDown":
-          startGame();
-          if (isGamePaused) break;
-          if (directionRef.current === Direction.Up || isMoveMade) break;
-          directionRef.current = Direction.Down;
-          setIsMoveMade(true);
+          handleArrowKeyDown(Direction.Down, Direction.Up);
           break;
         case "ArrowLeft":
-          startGame();
-          if (isGamePaused) break;
-          if (directionRef.current === Direction.Right || isMoveMade) break;
-          directionRef.current = Direction.Left;
-          setIsMoveMade(true);
+          handleArrowKeyDown(Direction.Left, Direction.Right);
           break;
         case "ArrowRight":
-          startGame();
-          if (isGamePaused) break;
-          if (directionRef.current === Direction.Left || isMoveMade) break;
-          directionRef.current = Direction.Right;
-          setIsMoveMade(true);
+          handleArrowKeyDown(Direction.Right, Direction.Left);
           break;
         case "Escape":
-          if (!isGameStarted) break;
-
-          if (isGamePaused) {
-            setIsGamePaused(false);
-            break;
-          }
-          setIsGamePaused(true);
-          clearInterval(intervalIdRef.current as NodeJS.Timeout);
+          handlePause();
+          break;
+        case " ":
+          handlePause();
           break;
       }
     };

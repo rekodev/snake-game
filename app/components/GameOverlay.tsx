@@ -10,7 +10,7 @@ const GameOverlay = ({ isGameStarted }: Props) => {
       <CardBody className="flex items-center justify-center bg-transparent p-8">
         <p className="text-tiny font-bold uppercase text-white/60">
           {isGameStarted
-            ? "Press Esc or hit Play to resume"
+            ? "Press Esc or Spacebar or hit Play to resume"
             : "Press any of the Arrow Keys to start"}
         </p>
         <h4 className="font-large text-3xl text-white/90">

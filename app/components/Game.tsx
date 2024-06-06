@@ -1,13 +1,15 @@
 "use client";
 
 import { useDisclosure } from "@nextui-org/modal";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import {
   Direction,
   GAME_SPEED,
   INITIAL_FOOD_CELL,
   INITIAL_SNAKE_CELLS,
 } from "../constants";
+import { HighScoreContext } from "../contexts/HighScoreContext";
+import { NameContext } from "../contexts/NameContext";
 import useGameControls from "../hooks/useGameControls";
 import { checkIfGameOver, determineNextSnakeCells } from "../utils";
 import GameBoard from "./GameBoard";
@@ -16,9 +18,10 @@ import GamePanel from "./GamePanel";
 import WelcomeModal from "./WelcomeModal";
 
 const Game = () => {
-  const [name, setName] = useState("");
-  const [score, setScore] = useState(0);
+  const { name, setName } = useContext(NameContext);
+  const { highScore, setHighScore } = useContext(HighScoreContext);
 
+  const [score, setScore] = useState(0);
   const [snakeCells, setSnakeCells] = useState(INITIAL_SNAKE_CELLS);
   const [foodCell, setFoodCell] = useState(INITIAL_FOOD_CELL);
   const [direction, setDirection] = useState(Direction.Right);
@@ -46,6 +49,12 @@ const Game = () => {
     handleGameOver,
   } = useGameControls({ directionRef, intervalIdRef, onGameOverModalOpen });
 
+  const setHighScoreIfNew = useCallback(() => {
+    if (score <= highScore) return;
+
+    setHighScore(score);
+  }, [highScore, setHighScore, score]);
+
   useEffect(() => {
     if (!isGameStarted || isGamePaused) return;
 
@@ -58,7 +67,9 @@ const Game = () => {
       );
 
       if (checkIfGameOver(nextSnakeCells)) {
+        setHighScoreIfNew();
         handleGameOver();
+
         return;
       }
 
@@ -67,11 +78,20 @@ const Game = () => {
     }, GAME_SPEED);
 
     return () => clearInterval(intervalIdRef.current as NodeJS.Timeout);
-  }, [isGameStarted, isGamePaused, handleGameOver, snakeCells, setIsMoveMade]);
+  }, [
+    snakeCells,
+    isGameStarted,
+    isGamePaused,
+    handleGameOver,
+    setIsMoveMade,
+    setHighScoreIfNew,
+  ]);
 
   useEffect(() => {
+    if (name) return;
+
     onWelcomeModalOpen();
-  }, [onWelcomeModalOpen]);
+  }, [onWelcomeModalOpen, name]);
 
   const handlePlayAgain = () => {
     setScore(0);
