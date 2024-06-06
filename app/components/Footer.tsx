@@ -1,10 +1,9 @@
-import { Navbar, NavbarContent } from "@nextui-org/navbar";
 import GitHubIcon from "./icons/GitHubIcon";
 
 const Footer = () => {
   return (
-    <Navbar className="border">
-      <NavbarContent>
+    <footer className="h-[65px] border-t-1 border-t-neutral-300 dark:border-t-neutral-700">
+      <div className="mx-auto flex h-full max-w-5xl items-center justify-center">
         <p className="mx-auto flex">
           Made by rekodev&nbsp;
           <span>
@@ -13,8 +12,8 @@ const Footer = () => {
             </a>
           </span>
         </p>
-      </NavbarContent>
-    </Navbar>
+      </div>
+    </footer>
   );
 };
 

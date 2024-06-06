@@ -30,24 +30,28 @@ const useGameControls = ({
       switch (event.key) {
         case "ArrowUp":
           startGame();
+          if (isGamePaused) break;
           if (directionRef.current === Direction.Down || isMoveMade) break;
           directionRef.current = Direction.Up;
           setIsMoveMade(true);
           break;
         case "ArrowDown":
           startGame();
+          if (isGamePaused) break;
           if (directionRef.current === Direction.Up || isMoveMade) break;
           directionRef.current = Direction.Down;
           setIsMoveMade(true);
           break;
         case "ArrowLeft":
           startGame();
+          if (isGamePaused) break;
           if (directionRef.current === Direction.Right || isMoveMade) break;
           directionRef.current = Direction.Left;
           setIsMoveMade(true);
           break;
         case "ArrowRight":
           startGame();
+          if (isGamePaused) break;
           if (directionRef.current === Direction.Left || isMoveMade) break;
           directionRef.current = Direction.Right;
           setIsMoveMade(true);
