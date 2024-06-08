@@ -4,23 +4,21 @@ import { CELL_WIDTH, Direction } from "../constants";
 import SnakeCell from "./SnakeCell";
 
 type Props = {
-  snakeCells: Array<{ x: number; y: number }>;
   rowIndex: number;
   cellIndex: number;
   foodCell: { x: number; y: number };
+  snakeCells: Array<{ x: number; y: number }>;
   onEatFood: () => void;
   direction: Direction;
-  onGameOver: () => void;
 };
 
 const GameBoardCell = memo(function GameBoardCell({
-  snakeCells,
   rowIndex,
   cellIndex,
+  snakeCells,
   foodCell,
-  onEatFood,
   direction,
-  onGameOver,
+  onEatFood,
 }: Props) {
   const evenRow = rowIndex % 2 === 0;
   const evenCell = cellIndex % 2 === 0;
@@ -54,12 +52,6 @@ const GameBoardCell = memo(function GameBoardCell({
 
     onEatFood();
   }, [isFoodCell, isHead, onEatFood]);
-
-  useEffect(() => {
-    if (!isHead || !(isBody || isTail)) return;
-
-    onGameOver();
-  }, [isBody, isHead, isTail, onGameOver]);
 
   const renderCellImage = (src: string, alt: string) => (
     <Image

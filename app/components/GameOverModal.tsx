@@ -47,7 +47,12 @@ const GameOverModal = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Modal
+      isOpen={isOpen}
+      isDismissable={false}
+      hideCloseButton
+      onOpenChange={onOpenChange}
+    >
       <ModalContent>
         {(onClose) => (
           <>
@@ -56,7 +61,7 @@ const GameOverModal = ({
             </ModalHeader>
             <ModalBody>
               <p>
-                Your score is: <span className=" font-medium">{score}</span>
+                Your score is: <span className="font-medium">{score}</span>
               </p>
             </ModalBody>
             <ModalFooter>

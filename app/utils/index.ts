@@ -37,7 +37,7 @@ const getDirection = (from: GameCell, to: GameCell) => {
 
 export const determineBodyCellPositioning = (
   snakeCells: Array<GameCell>,
-  index: number
+  index: number,
 ) => {
   if (index === 0 || index === snakeCells.length - 1) return;
 
@@ -77,4 +77,59 @@ export const determineBodyCellPositioning = (
   ) {
     return BodyCellPositioning.BottomRight;
   }
+};
+
+export const determineNextSnakeCells = (
+  snakeCells: Array<GameCell>,
+  direction: Direction,
+) => {
+  const currentHead = snakeCells[snakeCells.length - 1];
+
+  let newHead;
+
+  switch (direction) {
+    case Direction.Up:
+      newHead = {
+        x: currentHead.x,
+        y: currentHead.y - 1,
+      };
+      break;
+    case Direction.Down:
+      newHead = {
+        x: currentHead.x,
+        y: currentHead.y + 1,
+      };
+      break;
+    case Direction.Left:
+      newHead = {
+        x: currentHead.x - 1,
+        y: currentHead.y,
+      };
+      break;
+    case Direction.Right:
+      newHead = {
+        x: currentHead.x + 1,
+        y: currentHead.y,
+      };
+      break;
+  }
+
+  return [...snakeCells.slice(1), newHead];
+};
+
+export const checkIfGameOver = (snakeCells: Array<GameCell>) => {
+  const nextHead = snakeCells[snakeCells.length - 1];
+  const nextSnakeCellsWithoutHead = snakeCells.slice(0, snakeCells.length - 1);
+
+  const isCollision = nextSnakeCellsWithoutHead.some(
+    (cell) => cell.x === nextHead.x && cell.y === nextHead.y,
+  );
+
+  const isOutOfBounds =
+    nextHead.x < 0 ||
+    nextHead.x >= BOARD_DIMENSIONS.width ||
+    nextHead.y < 0 ||
+    nextHead.y >= BOARD_DIMENSIONS.height;
+
+  return isCollision || isOutOfBounds;
 };

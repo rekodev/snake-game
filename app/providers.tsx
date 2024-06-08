@@ -1,6 +1,8 @@
-import { NextUIProvider } from '@nextui-org/system';
-import { ThemeProvider as NextThemesProvider } from 'next-themes';
-import { ReactNode } from 'react';
+import { NextUIProvider } from "@nextui-org/system";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { ReactNode } from "react";
+import { HighScoreProvider } from "./contexts/HighScoreContext";
+import { NameProvider } from "./contexts/NameContext";
 
 type Props = {
   children: ReactNode;
@@ -8,9 +10,11 @@ type Props = {
 
 const Providers = ({ children }: Props) => {
   return (
-    <NextUIProvider className='flex flex-col min-h-dvh'>
-      <NextThemesProvider attribute='class' defaultTheme='dark'>
-        {children}
+    <NextUIProvider className="flex min-h-dvh flex-col">
+      <NextThemesProvider attribute="class" defaultTheme="dark">
+        <NameProvider>
+          <HighScoreProvider>{children}</HighScoreProvider>
+        </NameProvider>
       </NextThemesProvider>
     </NextUIProvider>
   );

@@ -8,12 +8,14 @@ type Props = {
   score: number;
   intervalId: NodeJS.Timeout;
   isGamePaused: boolean;
+  isGameStarted: boolean;
   setIsGamePaused: (isGamePaused: boolean) => void;
 };
 
 const GamePanel = ({
   score,
   intervalId,
+  isGameStarted,
   isGamePaused,
   setIsGamePaused,
 }: Props) => {
@@ -28,9 +30,13 @@ const GamePanel = ({
   };
 
   return (
-    <div className="max-w-[500px] h-full w-full flex justify-between">
+    <div className="flex h-full w-full max-w-[500px] justify-between">
       <ScoreCard score={score} />{" "}
-      <Button className="h-12" onPress={handlePause}>
+      <Button
+        isDisabled={!isGameStarted}
+        className="h-12"
+        onPress={handlePause}
+      >
         {isGamePaused ? (
           <>
             <PlayIcon />
