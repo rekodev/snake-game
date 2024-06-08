@@ -1,8 +1,4 @@
-type Props = {
-  size?: string | number;
-};
-
-const StarIcon = ({ size = 6 }: Props) => {
+const StarIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -10,7 +6,7 @@ const StarIcon = ({ size = 6 }: Props) => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className={`size-${size}`}
+      className="size-6"
     >
       <path
         strokeLinecap="round"
