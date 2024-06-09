@@ -35,6 +35,7 @@ const WelcomeModal = ({ isOpen, onOpenChange, name, setName }: Props) => {
     <Modal
       isOpen={isOpen}
       isDismissable={false}
+      isKeyboardDismissDisabled
       hideCloseButton
       onOpenChange={onOpenChange}
     >

@@ -1,0 +1,17 @@
+export const IMAGE_URLS = [
+  "/images/apple.png",
+  "/images/body_bottomleft.png",
+  "/images/body_bottomright.png",
+  "/images/body_horizontal.png",
+  "/images/body_topleft.png",
+  "/images/body_topright.png",
+  "/images/body_vertical.png",
+  "/images/head_down.png",
+  "/images/head_left.png",
+  "/images/head_right.png",
+  "/images/head_up.png",
+  "/images/tail_down.png",
+  "/images/tail_left.png",
+  "/images/tail_right.png",
+  "/images/tail_up.png",
+];

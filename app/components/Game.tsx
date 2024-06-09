@@ -8,13 +8,21 @@ import {
   INITIAL_FOOD_CELL,
   INITIAL_SNAKE_CELLS,
 } from "../constants";
+import { IMAGE_URLS } from "../constants/imageUrls";
 import { HighScoreContext } from "../contexts/HighScoreContext";
 import { NameContext } from "../contexts/NameContext";
 import useGameControls from "../hooks/useGameControls";
-import { checkIfGameOver, determineNextSnakeCells } from "../utils";
+import { GameCell } from "../types";
+import {
+  checkIfGameOver,
+  determineNextSnakeCells,
+  determineTailDirection,
+  generateNewFoodCell,
+} from "../utils";
 import GameBoard from "./GameBoard";
 import GameOverModal from "./GameOverModal";
 import GamePanel from "./GamePanel";
+import PreloadedSnakeImages from "./PreloadedSnakeImages";
 import WelcomeModal from "./WelcomeModal";
 
 const Game = () => {
@@ -51,6 +59,7 @@ const Game = () => {
     intervalIdRef,
     onGameOverModalOpen,
     currentDirection: direction,
+    isWelcomeModalOpen,
   });
 
   const setHighScoreIfNew = useCallback(() => {
@@ -59,34 +68,75 @@ const Game = () => {
     setHighScore(score);
   }, [highScore, setHighScore, score]);
 
+  const eatFood = useCallback(
+    (nextCells: Array<GameCell>) => {
+      const newSnakeCells = [...nextCells];
+      const tail = newSnakeCells[0];
+      const tailDirection = determineTailDirection(newSnakeCells);
+
+      switch (tailDirection) {
+        case Direction.Up:
+          newSnakeCells.unshift({ x: tail.x, y: tail.y - 1 });
+          break;
+        case Direction.Down:
+          newSnakeCells.unshift({ x: tail.x, y: tail.y + 1 });
+          break;
+        case Direction.Left:
+          newSnakeCells.unshift({ x: tail.x - 1, y: tail.y });
+          break;
+        case Direction.Right:
+          newSnakeCells.unshift({ x: tail.x + 1, y: tail.y });
+          break;
+      }
+
+      setScore(score + 1);
+      setFoodCell(generateNewFoodCell(snakeCells));
+      setSnakeCells(newSnakeCells);
+    },
+    [score, setScore, snakeCells, setSnakeCells, setFoodCell],
+  );
+
+  const advanceGame = useCallback(() => {
+    const nextSnakeCells = determineNextSnakeCells(
+      snakeCells,
+      directionRef.current,
+    );
+
+    if (checkIfGameOver(nextSnakeCells)) {
+      setHighScoreIfNew();
+      handleGameOver();
+
+      return;
+    }
+
+    const isEatingFood = nextSnakeCells.some(
+      (cell) => cell.x === foodCell.x && cell.y === foodCell.y,
+    );
+
+    if (isEatingFood) {
+      eatFood(nextSnakeCells);
+    } else {
+      setSnakeCells(nextSnakeCells);
+    }
+
+    setDirection(directionRef.current);
+  }, [
+    snakeCells,
+    setSnakeCells,
+    setDirection,
+    setHighScoreIfNew,
+    handleGameOver,
+    foodCell,
+    eatFood,
+  ]);
+
   useEffect(() => {
     if (!isGameStarted || isGamePaused) return;
 
-    intervalIdRef.current = setInterval(() => {
-      const nextSnakeCells = determineNextSnakeCells(
-        snakeCells,
-        directionRef.current,
-      );
-
-      if (checkIfGameOver(nextSnakeCells)) {
-        setHighScoreIfNew();
-        handleGameOver();
-
-        return;
-      }
-
-      setSnakeCells(nextSnakeCells);
-      setDirection(directionRef.current);
-    }, GAME_SPEED);
+    intervalIdRef.current = setInterval(advanceGame, GAME_SPEED);
 
     return () => clearInterval(intervalIdRef.current as NodeJS.Timeout);
-  }, [
-    snakeCells,
-    isGameStarted,
-    isGamePaused,
-    handleGameOver,
-    setHighScoreIfNew,
-  ]);
+  }, [advanceGame, isGameStarted, isGamePaused]);
 
   useEffect(() => {
     if (name) return;
@@ -95,9 +145,9 @@ const Game = () => {
   }, [onWelcomeModalOpen, name]);
 
   const handlePlayAgain = () => {
-    setScore(0);
     directionRef.current = Direction.Right;
     setDirection(Direction.Right);
+    setScore(0);
     setSnakeCells(INITIAL_SNAKE_CELLS);
     setFoodCell(INITIAL_FOOD_CELL);
     setIsGameOver(false);
@@ -105,7 +155,7 @@ const Game = () => {
 
   return (
     <>
-      <div className="mx-auto flex aspect-square max-h-[70dvh] flex-col items-center justify-center gap-4">
+      <section className="relative mx-auto mt-16 flex aspect-square max-h-[70vh] flex-1 flex-col items-center justify-start gap-4">
         <GamePanel
           score={score}
           intervalId={intervalIdRef.current as NodeJS.Timeout}
@@ -114,18 +164,15 @@ const Game = () => {
           setIsGamePaused={setIsGamePaused}
         />
         <GameBoard
-          score={score}
-          setScore={setScore}
           snakeCells={snakeCells}
-          setSnakeCells={setSnakeCells}
           isGameStarted={isGameStarted}
           isGamePaused={isGamePaused}
           direction={direction}
           foodCell={foodCell}
-          setFoodCell={setFoodCell}
         />
-      </div>
+      </section>
 
+      <PreloadedSnakeImages imageUrls={IMAGE_URLS} />
       <WelcomeModal
         isOpen={isWelcomeModalOpen}
         onOpenChange={onWelcomeModalOpenChange}

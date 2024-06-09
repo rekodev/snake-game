@@ -12,6 +12,7 @@ type Props = {
   directionRef: MutableRefObject<Direction>;
   onGameOverModalOpen: () => void;
   currentDirection: Direction;
+  isWelcomeModalOpen: boolean;
 };
 
 const useGameControls = ({
@@ -19,6 +20,7 @@ const useGameControls = ({
   directionRef,
   onGameOverModalOpen,
   currentDirection,
+  isWelcomeModalOpen,
 }: Props) => {
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [isGamePaused, setIsGamePaused] = useState(false);
@@ -38,7 +40,7 @@ const useGameControls = ({
   }, [currentDirection]);
 
   useEffect(() => {
-    if (isGameOver) return;
+    if (isWelcomeModalOpen || isGameOver) return;
 
     const handleArrowKeyDown = (direction: Direction) => {
       if (!isGameStarted) setIsGameStarted(true);
@@ -96,6 +98,7 @@ const useGameControls = ({
     intervalIdRef,
     directionRef,
     oppositeCurrentDirection,
+    isWelcomeModalOpen,
   ]);
 
   const handleGameOver = useCallback(() => {

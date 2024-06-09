@@ -1,6 +1,7 @@
-import { BodyCellPositioning, Direction } from '../constants';
-import { GameCell } from '../types';
-import { determineBodyCellPositioning, determineTailDirection } from '../utils';
+import { BodyCellPositioning, Direction } from "../constants";
+import { GameCell } from "../types";
+import { determineBodyCellPositioning, determineTailDirection } from "../utils";
+import SnakeImage from "./SnakeImage";
 
 type Props = {
   snakeCells: Array<GameCell>;
@@ -9,7 +10,6 @@ type Props = {
   cellIndex: number;
   isHead: boolean;
   isTail: boolean;
-  renderCellImage: (src: string, alt: string) => JSX.Element;
 };
 
 const SnakeCell = ({
@@ -19,20 +19,21 @@ const SnakeCell = ({
   cellIndex,
   isHead,
   isTail,
-  renderCellImage,
 }: Props) => {
   const renderSnakeHead = () => {
     if (!isHead) return;
 
     switch (direction) {
       case Direction.Up:
-        return renderCellImage('/images/head_up.png', 'Snake Head Up');
+        return <SnakeImage src="/images/head_up.png" alt="Snake Head Up" />;
       case Direction.Down:
-        return renderCellImage('/images/head_down.png', 'Snake Head Down');
+        return <SnakeImage src="/images/head_down.png" alt="Snake Head Down" />;
       case Direction.Left:
-        return renderCellImage('/images/head_left.png', 'Snake Head Left');
+        return <SnakeImage src="/images/head_left.png" alt="Snake Head Left" />;
       case Direction.Right:
-        return renderCellImage('/images/head_right.png', 'Snake Head Right');
+        return (
+          <SnakeImage src="/images/head_right.png" alt="Snake Head Right" />
+        );
     }
   };
 
@@ -43,13 +44,15 @@ const SnakeCell = ({
 
     switch (tailDirection) {
       case Direction.Up:
-        return renderCellImage('/images/tail_up.png', 'Snake Tail Up');
+        return <SnakeImage src="/images/tail_up.png" alt="Snake Tail Up" />;
       case Direction.Down:
-        return renderCellImage('/images/tail_down.png', 'Snake Tail Down');
+        return <SnakeImage src="/images/tail_down.png" alt="Snake Tail Down" />;
       case Direction.Left:
-        return renderCellImage('/images/tail_left.png', 'Snake Tail Left');
+        return <SnakeImage src="/images/tail_left.png" alt="Snake Tail Left" />;
       case Direction.Right:
-        return renderCellImage('/images/tail_right.png', 'Snake Tail Right');
+        return (
+          <SnakeImage src="/images/tail_right.png" alt="Snake Tail Right" />
+        );
     }
   };
 
@@ -57,44 +60,56 @@ const SnakeCell = ({
     if (isHead || isTail) return null;
 
     const snakeCellIndex = snakeCells.findIndex(
-      (cell) => cell.x === cellIndex && cell.y === rowIndex
+      (cell) => cell.x === cellIndex && cell.y === rowIndex,
     );
 
     const cellPositioning = determineBodyCellPositioning(
       snakeCells,
-      snakeCellIndex
+      snakeCellIndex,
     );
 
     switch (cellPositioning) {
       case BodyCellPositioning.Horizontal:
-        return renderCellImage(
-          '/images/body_horizontal.png',
-          'Snake Body Horizontal'
+        return (
+          <SnakeImage
+            src="/images/body_horizontal.png"
+            alt="Snake Body Horizontal"
+          />
         );
       case BodyCellPositioning.Vertical:
-        return renderCellImage(
-          '/images/body_vertical.png',
-          'Snake Body Vertical'
+        return (
+          <SnakeImage
+            src="/images/body_vertical.png"
+            alt="Snake Body Vertical"
+          />
         );
       case BodyCellPositioning.TopRight:
-        return renderCellImage(
-          '/images/body_topright.png',
-          'Snake Body Top Right'
+        return (
+          <SnakeImage
+            src="/images/body_topright.png"
+            alt="Snake Body Top Right"
+          />
         );
       case BodyCellPositioning.TopLeft:
-        return renderCellImage(
-          '/images/body_topleft.png',
-          'Snake Body Top Left'
+        return (
+          <SnakeImage
+            src="/images/body_topleft.png"
+            alt="Snake Body Top Left"
+          />
         );
       case BodyCellPositioning.BottomRight:
-        return renderCellImage(
-          '/images/body_bottomright.png',
-          'Snake Body Bottom Right'
+        return (
+          <SnakeImage
+            src="/images/body_bottomright.png"
+            alt="Snake Body Bottom Right"
+          />
         );
       case BodyCellPositioning.BottomLeft:
-        return renderCellImage(
-          '/images/body_bottomleft.png',
-          'Snake Body Bottom Left'
+        return (
+          <SnakeImage
+            src="/images/body_bottomleft.png"
+            alt="Snake Body Bottom Left"
+          />
         );
       default:
         return null;

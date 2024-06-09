@@ -1,14 +1,13 @@
-import Image from "next/image";
-import { memo, useEffect, useMemo } from "react";
+import { memo, useMemo } from "react";
 import { CELL_WIDTH, Direction } from "../constants";
 import SnakeCell from "./SnakeCell";
+import SnakeImage from "./SnakeImage";
 
 type Props = {
   rowIndex: number;
   cellIndex: number;
   foodCell: { x: number; y: number };
   snakeCells: Array<{ x: number; y: number }>;
-  onEatFood: () => void;
   direction: Direction;
 };
 
@@ -18,7 +17,6 @@ const GameBoardCell = memo(function GameBoardCell({
   snakeCells,
   foodCell,
   direction,
-  onEatFood,
 }: Props) {
   const evenRow = rowIndex % 2 === 0;
   const evenCell = cellIndex % 2 === 0;
@@ -47,24 +45,11 @@ const GameBoardCell = memo(function GameBoardCell({
     [foodCell, cellIndex, rowIndex],
   );
 
-  useEffect(() => {
-    if (!isFoodCell || !isHead) return;
+  const renderFoodCell = () => {
+    if (!isFoodCell) return null;
 
-    onEatFood();
-  }, [isFoodCell, isHead, onEatFood]);
-
-  const renderCellImage = (src: string, alt: string) => (
-    <Image
-      sizes="(max-width: 700px) 50px, 50px"
-      quality={50}
-      priority
-      loading="eager"
-      src={src}
-      alt={alt}
-      fill
-      className="object-contain"
-    />
-  );
+    return <SnakeImage src="/images/apple.png" alt="Apple" />;
+  };
 
   const renderSnakeCell = () => {
     if (!isHead && !isTail && !isBody) return null;
@@ -77,7 +62,6 @@ const GameBoardCell = memo(function GameBoardCell({
         isHead={isHead}
         isTail={isTail}
         snakeCells={snakeCells}
-        renderCellImage={renderCellImage}
       />
     );
   };
@@ -85,13 +69,13 @@ const GameBoardCell = memo(function GameBoardCell({
   return (
     <div
       key={cellIndex}
-      className={`cell ${
+      className={` ${
         darkerCell ? "bg-green-200" : "bg-green-100"
       } relative h-full`}
       style={{ width: CELL_WIDTH }}
     >
-      {isFoodCell && renderCellImage("/images/apple.png", "Apple")}
       {renderSnakeCell()}
+      {renderFoodCell()}
     </div>
   );
 });
