@@ -59,6 +59,7 @@ const GameOverModal = ({
     <Modal
       isOpen={isOpen}
       isDismissable={false}
+      isKeyboardDismissDisabled
       hideCloseButton
       onOpenChange={onOpenChange}
     >

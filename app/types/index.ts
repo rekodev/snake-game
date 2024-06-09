@@ -6,3 +6,7 @@ export type User = {
   score: number;
   createdAt: string;
 };
+
+export type LoadedImages = {
+  [key: string]: HTMLImageElement;
+};

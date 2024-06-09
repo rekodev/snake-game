@@ -23,7 +23,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Providers>
           <Header />
-          <main className="mx-auto w-full max-w-screen-lg flex-1 px-6 py-4">
+          <main className="mx-auto flex w-full max-w-screen-lg flex-1 flex-col px-6 py-4">
             {children}
           </main>
           <Footer />

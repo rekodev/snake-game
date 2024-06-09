@@ -10,6 +10,7 @@ type Props = {
   cellIndex: number;
   isHead: boolean;
   isTail: boolean;
+  loadedImages: Record<string, HTMLImageElement>;
 };
 
 const SnakeCell = ({
@@ -19,6 +20,7 @@ const SnakeCell = ({
   cellIndex,
   isHead,
   isTail,
+  loadedImages,
 }: Props) => {
   const renderSnakeImage = (src: string, alt: string) => (
     <Image
@@ -38,13 +40,25 @@ const SnakeCell = ({
 
     switch (direction) {
       case Direction.Up:
-        return renderSnakeImage("/images/head_up.png", "Snake Head Up");
+        return renderSnakeImage(
+          loadedImages["/images/head_up.png"].src,
+          "Snake Head Up",
+        );
       case Direction.Down:
-        return renderSnakeImage("/images/head_down.png", "Snake Head Down");
+        return renderSnakeImage(
+          loadedImages["/images/head_down.png"].src,
+          "Snake Head Down",
+        );
       case Direction.Left:
-        return renderSnakeImage("/images/head_left.png", "Snake Head Left");
+        return renderSnakeImage(
+          loadedImages["/images/head_left.png"].src,
+          "Snake Head Left",
+        );
       case Direction.Right:
-        return renderSnakeImage("/images/head_right.png", "Snake Head Right");
+        return renderSnakeImage(
+          loadedImages["/images/head_right.png"].src,
+          "Snake Head Right",
+        );
     }
   };
 
@@ -55,13 +69,25 @@ const SnakeCell = ({
 
     switch (tailDirection) {
       case Direction.Up:
-        return renderSnakeImage("/images/tail_up.png", "Snake Tail Up");
+        return renderSnakeImage(
+          loadedImages["/images/tail_up.png"].src,
+          "Snake Tail Up",
+        );
       case Direction.Down:
-        return renderSnakeImage("/images/tail_down.png", "Snake Tail Down");
+        return renderSnakeImage(
+          loadedImages["/images/tail_down.png"].src,
+          "Snake Tail Down",
+        );
       case Direction.Left:
-        return renderSnakeImage("/images/tail_left.png", "Snake Tail Left");
+        return renderSnakeImage(
+          loadedImages["/images/tail_left.png"].src,
+          "Snake Tail Left",
+        );
       case Direction.Right:
-        return renderSnakeImage("/images/tail_right.png", "Snake Tail Right");
+        return renderSnakeImage(
+          loadedImages["/images/tail_right.png"].src,
+          "Snake Tail Right",
+        );
     }
   };
 

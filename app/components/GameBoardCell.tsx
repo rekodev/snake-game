@@ -9,7 +9,7 @@ type Props = {
   foodCell: { x: number; y: number };
   snakeCells: Array<{ x: number; y: number }>;
   direction: Direction;
-  onEatFood: () => void;
+  loadedImages: Record<string, HTMLImageElement>;
 };
 
 const GameBoardCell = memo(function GameBoardCell({
@@ -18,7 +18,7 @@ const GameBoardCell = memo(function GameBoardCell({
   snakeCells,
   foodCell,
   direction,
-  onEatFood,
+  loadedImages,
 }: Props) {
   const evenRow = rowIndex % 2 === 0;
   const evenCell = cellIndex % 2 === 0;
@@ -47,12 +47,6 @@ const GameBoardCell = memo(function GameBoardCell({
     [foodCell, cellIndex, rowIndex],
   );
 
-  useEffect(() => {
-    if (!isFoodCell || !isHead) return;
-
-    onEatFood();
-  }, [isFoodCell, isHead, onEatFood]);
-
   const renderFoodCell = () => {
     if (!isFoodCell) return null;
 
@@ -62,7 +56,7 @@ const GameBoardCell = memo(function GameBoardCell({
         quality={50}
         priority
         loading="eager"
-        src={"/images/apple.png"}
+        src={loadedImages["/images/apple.png"].src}
         alt={"Apple"}
         fill
         className="object-contain"
@@ -81,6 +75,7 @@ const GameBoardCell = memo(function GameBoardCell({
         isHead={isHead}
         isTail={isTail}
         snakeCells={snakeCells}
+        loadedImages={loadedImages}
       />
     );
   };
