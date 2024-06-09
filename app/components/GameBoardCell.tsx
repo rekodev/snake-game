@@ -8,8 +8,8 @@ type Props = {
   cellIndex: number;
   foodCell: { x: number; y: number };
   snakeCells: Array<{ x: number; y: number }>;
-  onEatFood: () => void;
   direction: Direction;
+  onEatFood: () => void;
 };
 
 const GameBoardCell = memo(function GameBoardCell({
@@ -53,18 +53,22 @@ const GameBoardCell = memo(function GameBoardCell({
     onEatFood();
   }, [isFoodCell, isHead, onEatFood]);
 
-  const renderCellImage = (src: string, alt: string) => (
-    <Image
-      sizes="(max-width: 700px) 50px, 50px"
-      quality={50}
-      priority
-      loading="eager"
-      src={src}
-      alt={alt}
-      fill
-      className="object-contain"
-    />
-  );
+  const renderFoodCell = () => {
+    if (!isFoodCell) return null;
+
+    return (
+      <Image
+        sizes="(max-width: 700px) 50px, 50px"
+        quality={50}
+        priority
+        loading="eager"
+        src={"/images/apple.png"}
+        alt={"Apple"}
+        fill
+        className="object-contain"
+      />
+    );
+  };
 
   const renderSnakeCell = () => {
     if (!isHead && !isTail && !isBody) return null;
@@ -77,7 +81,6 @@ const GameBoardCell = memo(function GameBoardCell({
         isHead={isHead}
         isTail={isTail}
         snakeCells={snakeCells}
-        renderCellImage={renderCellImage}
       />
     );
   };
@@ -85,13 +88,13 @@ const GameBoardCell = memo(function GameBoardCell({
   return (
     <div
       key={cellIndex}
-      className={`cell ${
+      className={` ${
         darkerCell ? "bg-green-200" : "bg-green-100"
       } relative h-full`}
       style={{ width: CELL_WIDTH }}
     >
-      {isFoodCell && renderCellImage("/images/apple.png", "Apple")}
       {renderSnakeCell()}
+      {renderFoodCell()}
     </div>
   );
 });
