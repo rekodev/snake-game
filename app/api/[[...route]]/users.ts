@@ -28,11 +28,17 @@ const app = new Hono()
     const { name, score } = await c.req.json<Pick<User, "name" | "score">>();
 
     if (score < 0 || score > MAX_SCORE) {
-      return c.json({ error: "Your score is invalid!" }, 400);
+      return c.json(
+        { error: `Score must be between 0 and ${MAX_SCORE}`, ok: false },
+        400,
+      );
     }
 
-    if (name.length < 3 || name.length > 20) {
-      return c.json({ error: "Your name is invalid!" }, 400);
+    if (name.length < 2 || name.length > 20) {
+      return c.json(
+        { error: "Name must be between 2 and 20 characters", ok: false },
+        400,
+      );
     }
 
     try {
@@ -41,10 +47,14 @@ const app = new Hono()
         .values({ name, score })
         .returning({ insertedId: UsersTable.id });
 
-      return c.json({ message: "Score submitted!", result }, 201);
+      if (!result?.length) {
+        return c.json({ error: "Failed to submit score!", ok: false }, 422);
+      }
+
+      return c.json({ message: "Score submitted!", ok: true, result }, 201);
     } catch (error) {
       console.error(error);
-      return c.json({ error: "Failed to submit score!" });
+      return c.json({ error: "Failed to submit score!", ok: false }, 500);
     }
   });
 

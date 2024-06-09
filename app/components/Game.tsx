@@ -45,9 +45,13 @@ const Game = () => {
     isGamePaused,
     setIsGameOver,
     setIsGamePaused,
-    setIsMoveMade,
     handleGameOver,
-  } = useGameControls({ directionRef, intervalIdRef, onGameOverModalOpen });
+  } = useGameControls({
+    directionRef,
+    intervalIdRef,
+    onGameOverModalOpen,
+    currentDirection: direction,
+  });
 
   const setHighScoreIfNew = useCallback(() => {
     if (score <= highScore) return;
@@ -59,8 +63,6 @@ const Game = () => {
     if (!isGameStarted || isGamePaused) return;
 
     intervalIdRef.current = setInterval(() => {
-      setIsMoveMade(false);
-
       const nextSnakeCells = determineNextSnakeCells(
         snakeCells,
         directionRef.current,
@@ -83,7 +85,6 @@ const Game = () => {
     isGameStarted,
     isGamePaused,
     handleGameOver,
-    setIsMoveMade,
     setHighScoreIfNew,
   ]);
 

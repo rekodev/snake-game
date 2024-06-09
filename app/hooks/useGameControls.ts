@@ -1,36 +1,52 @@
-import { MutableRefObject, useCallback, useEffect, useState } from "react";
+import {
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Direction } from "../constants";
 
 type Props = {
   intervalIdRef: MutableRefObject<NodeJS.Timeout | null>;
   directionRef: MutableRefObject<Direction>;
   onGameOverModalOpen: () => void;
+  currentDirection: Direction;
 };
 
 const useGameControls = ({
   intervalIdRef,
   directionRef,
   onGameOverModalOpen,
+  currentDirection,
 }: Props) => {
-  const [isMoveMade, setIsMoveMade] = useState(false);
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [isGamePaused, setIsGamePaused] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
 
+  const oppositeCurrentDirection = useMemo(() => {
+    switch (currentDirection) {
+      case Direction.Up:
+        return Direction.Down;
+      case Direction.Down:
+        return Direction.Up;
+      case Direction.Left:
+        return Direction.Right;
+      case Direction.Right:
+        return Direction.Left;
+    }
+  }, [currentDirection]);
+
   useEffect(() => {
     if (isGameOver) return;
 
-    const handleArrowKeyDown = (
-      direction: Direction,
-      oppositeDirection: Direction,
-    ) => {
+    const handleArrowKeyDown = (direction: Direction) => {
       if (!isGameStarted) setIsGameStarted(true);
 
       if (isGamePaused) return;
-      if (directionRef.current === oppositeDirection || isMoveMade) return;
+      if (direction === oppositeCurrentDirection) return;
 
       directionRef.current = direction;
-      setIsMoveMade(true);
     };
 
     const handlePause = () => {
@@ -48,16 +64,16 @@ const useGameControls = ({
     const handleKeyDown = (event: KeyboardEvent) => {
       switch (event.key) {
         case "ArrowUp":
-          handleArrowKeyDown(Direction.Up, Direction.Down);
+          handleArrowKeyDown(Direction.Up);
           break;
         case "ArrowDown":
-          handleArrowKeyDown(Direction.Down, Direction.Up);
+          handleArrowKeyDown(Direction.Down);
           break;
         case "ArrowLeft":
-          handleArrowKeyDown(Direction.Left, Direction.Right);
+          handleArrowKeyDown(Direction.Left);
           break;
         case "ArrowRight":
-          handleArrowKeyDown(Direction.Right, Direction.Left);
+          handleArrowKeyDown(Direction.Right);
           break;
         case "Escape":
           handlePause();
@@ -77,9 +93,9 @@ const useGameControls = ({
     setIsGamePaused,
     setIsGameStarted,
     isGameOver,
-    isMoveMade,
     intervalIdRef,
     directionRef,
+    oppositeCurrentDirection,
   ]);
 
   const handleGameOver = useCallback(() => {
@@ -95,7 +111,6 @@ const useGameControls = ({
     isGameOver,
     setIsGameOver,
     setIsGamePaused,
-    setIsMoveMade,
     handleGameOver,
   };
 };
