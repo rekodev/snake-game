@@ -70,7 +70,7 @@ const GameBoard = ({
   );
 
   return (
-    <div className="relative mx-auto aspect-square h-full max-h-[500px] w-full max-w-[500px]">
+    <div className="relative h-full w-full rounded-lg bg-primary p-6">
       {Array.from({ length: BOARD_DIMENSIONS.height }).map((_, index) =>
         renderGameBoardRow({ rowIndex: index }),
       )}

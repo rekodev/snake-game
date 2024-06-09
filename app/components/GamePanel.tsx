@@ -30,7 +30,7 @@ const GamePanel = ({
   };
 
   return (
-    <div className="flex h-full w-full max-w-[500px] justify-between">
+    <div className="flex w-full justify-between">
       <ScoreCard score={score} />{" "}
       <Button
         isDisabled={!isGameStarted}

@@ -19,11 +19,11 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <Providers>
           <Header />
-          <main className="flex-1 max-w-screen-lg mx-auto w-full px-6 py-4">
+          <main className="mx-auto w-full max-w-screen-lg flex-1 px-6 py-4">
             {children}
           </main>
           <Footer />

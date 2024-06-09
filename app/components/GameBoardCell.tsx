@@ -55,13 +55,14 @@ const GameBoardCell = memo(function GameBoardCell({
 
   const renderCellImage = (src: string, alt: string) => (
     <Image
-      sizes="100%"
+      sizes="(max-width: 700px) 50px, 50px"
       quality={50}
-      priority={true}
+      priority
+      loading="eager"
       src={src}
       alt={alt}
       fill
-      objectFit="contain"
+      className="object-contain"
     />
   );
 

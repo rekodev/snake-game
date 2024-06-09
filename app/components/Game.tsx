@@ -45,9 +45,13 @@ const Game = () => {
     isGamePaused,
     setIsGameOver,
     setIsGamePaused,
-    setIsMoveMade,
     handleGameOver,
-  } = useGameControls({ directionRef, intervalIdRef, onGameOverModalOpen });
+  } = useGameControls({
+    directionRef,
+    intervalIdRef,
+    onGameOverModalOpen,
+    currentDirection: direction,
+  });
 
   const setHighScoreIfNew = useCallback(() => {
     if (score <= highScore) return;
@@ -59,8 +63,6 @@ const Game = () => {
     if (!isGameStarted || isGamePaused) return;
 
     intervalIdRef.current = setInterval(() => {
-      setIsMoveMade(false);
-
       const nextSnakeCells = determineNextSnakeCells(
         snakeCells,
         directionRef.current,
@@ -83,7 +85,6 @@ const Game = () => {
     isGameStarted,
     isGamePaused,
     handleGameOver,
-    setIsMoveMade,
     setHighScoreIfNew,
   ]);
 
@@ -104,28 +105,27 @@ const Game = () => {
 
   return (
     <>
-      {name && !isWelcomeModalOpen && (
-        <div className="flex flex-col items-center justify-center gap-4">
-          <GamePanel
-            score={score}
-            intervalId={intervalIdRef.current as NodeJS.Timeout}
-            isGameStarted={isGameStarted}
-            isGamePaused={isGamePaused}
-            setIsGamePaused={setIsGamePaused}
-          />
-          <GameBoard
-            score={score}
-            setScore={setScore}
-            snakeCells={snakeCells}
-            setSnakeCells={setSnakeCells}
-            isGameStarted={isGameStarted}
-            isGamePaused={isGamePaused}
-            direction={direction}
-            foodCell={foodCell}
-            setFoodCell={setFoodCell}
-          />
-        </div>
-      )}
+      <div className="mx-auto flex aspect-square max-h-[70dvh] flex-col items-center justify-center gap-4">
+        <GamePanel
+          score={score}
+          intervalId={intervalIdRef.current as NodeJS.Timeout}
+          isGameStarted={isGameStarted}
+          isGamePaused={isGamePaused}
+          setIsGamePaused={setIsGamePaused}
+        />
+        <GameBoard
+          score={score}
+          setScore={setScore}
+          snakeCells={snakeCells}
+          setSnakeCells={setSnakeCells}
+          isGameStarted={isGameStarted}
+          isGamePaused={isGamePaused}
+          direction={direction}
+          foodCell={foodCell}
+          setFoodCell={setFoodCell}
+        />
+      </div>
+
       <WelcomeModal
         isOpen={isWelcomeModalOpen}
         onOpenChange={onWelcomeModalOpenChange}
