@@ -8,9 +8,11 @@ import {
   INITIAL_FOOD_CELL,
   INITIAL_SNAKE_CELLS,
 } from "../constants";
+import { IMAGE_URLS } from "../constants/imageUrls";
 import { HighScoreContext } from "../contexts/HighScoreContext";
 import { NameContext } from "../contexts/NameContext";
 import useGameControls from "../hooks/useGameControls";
+import { GameCell } from "../types";
 import {
   checkIfGameOver,
   determineNextSnakeCells,
@@ -20,16 +22,12 @@ import {
 import GameBoard from "./GameBoard";
 import GameOverModal from "./GameOverModal";
 import GamePanel from "./GamePanel";
+import PreloadedSnakeImages from "./PreloadedSnakeImages";
 import WelcomeModal from "./WelcomeModal";
-import usePreloadedImages from "../hooks/usePreloadedImages";
-import { IMAGE_URLS } from "../constants/imageUrls";
-import { GameCell } from "../types";
-import { Spinner } from "@nextui-org/spinner";
 
 const Game = () => {
   const { name, setName } = useContext(NameContext);
   const { highScore, setHighScore } = useContext(HighScoreContext);
-  const images = usePreloadedImages(IMAGE_URLS);
 
   const [score, setScore] = useState(0);
   const [snakeCells, setSnakeCells] = useState(INITIAL_SNAKE_CELLS);
@@ -157,30 +155,24 @@ const Game = () => {
 
   return (
     <>
-      {Object.keys(images).length > 0 ? (
-        <section className="relative mx-auto mt-16 flex aspect-square max-h-[70vh] flex-1 flex-col items-center justify-start gap-4">
-          <GamePanel
-            score={score}
-            intervalId={intervalIdRef.current as NodeJS.Timeout}
-            isGameStarted={isGameStarted}
-            isGamePaused={isGamePaused}
-            setIsGamePaused={setIsGamePaused}
-          />
-          <GameBoard
-            snakeCells={snakeCells}
-            isGameStarted={isGameStarted}
-            isGamePaused={isGamePaused}
-            direction={direction}
-            foodCell={foodCell}
-            images={images}
-          />
-        </section>
-      ) : (
-        <div className="mx-auto flex flex-1 justify-center">
-          <Spinner color="success" />
-        </div>
-      )}
+      <section className="relative mx-auto mt-16 flex aspect-square max-h-[70vh] flex-1 flex-col items-center justify-start gap-4">
+        <GamePanel
+          score={score}
+          intervalId={intervalIdRef.current as NodeJS.Timeout}
+          isGameStarted={isGameStarted}
+          isGamePaused={isGamePaused}
+          setIsGamePaused={setIsGamePaused}
+        />
+        <GameBoard
+          snakeCells={snakeCells}
+          isGameStarted={isGameStarted}
+          isGamePaused={isGamePaused}
+          direction={direction}
+          foodCell={foodCell}
+        />
+      </section>
 
+      <PreloadedSnakeImages imageUrls={IMAGE_URLS} />
       <WelcomeModal
         isOpen={isWelcomeModalOpen}
         onOpenChange={onWelcomeModalOpenChange}

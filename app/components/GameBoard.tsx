@@ -9,7 +9,6 @@ type Props = {
   isGamePaused: boolean;
   direction: Direction;
   foodCell: GameCell;
-  images: Record<string, HTMLImageElement>;
 };
 
 const GameBoard = ({
@@ -18,8 +17,6 @@ const GameBoard = ({
   isGamePaused,
   direction,
   foodCell,
-
-  images: loadedImages,
 }: Props) => {
   const renderGameBoardRow = ({ rowIndex }: { rowIndex: number }) => (
     <div key={rowIndex} className="flex w-full" style={{ height: ROW_HEIGHT }}>
@@ -31,7 +28,6 @@ const GameBoard = ({
           rowIndex={rowIndex}
           cellIndex={index}
           direction={direction}
-          loadedImages={loadedImages}
         />
       ))}
     </div>

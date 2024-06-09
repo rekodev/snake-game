@@ -1,7 +1,7 @@
-import Image from "next/image";
-import { memo, useEffect, useMemo } from "react";
+import { memo, useMemo } from "react";
 import { CELL_WIDTH, Direction } from "../constants";
 import SnakeCell from "./SnakeCell";
+import SnakeImage from "./SnakeImage";
 
 type Props = {
   rowIndex: number;
@@ -9,7 +9,6 @@ type Props = {
   foodCell: { x: number; y: number };
   snakeCells: Array<{ x: number; y: number }>;
   direction: Direction;
-  loadedImages: Record<string, HTMLImageElement>;
 };
 
 const GameBoardCell = memo(function GameBoardCell({
@@ -18,7 +17,6 @@ const GameBoardCell = memo(function GameBoardCell({
   snakeCells,
   foodCell,
   direction,
-  loadedImages,
 }: Props) {
   const evenRow = rowIndex % 2 === 0;
   const evenCell = cellIndex % 2 === 0;
@@ -50,18 +48,7 @@ const GameBoardCell = memo(function GameBoardCell({
   const renderFoodCell = () => {
     if (!isFoodCell) return null;
 
-    return (
-      <Image
-        sizes="(max-width: 700px) 50px, 50px"
-        quality={50}
-        priority
-        loading="eager"
-        src={loadedImages["/images/apple.png"].src}
-        alt={"Apple"}
-        fill
-        className="object-contain"
-      />
-    );
+    return <SnakeImage src="/images/apple.png" alt="Apple" />;
   };
 
   const renderSnakeCell = () => {
@@ -75,7 +62,6 @@ const GameBoardCell = memo(function GameBoardCell({
         isHead={isHead}
         isTail={isTail}
         snakeCells={snakeCells}
-        loadedImages={loadedImages}
       />
     );
   };
