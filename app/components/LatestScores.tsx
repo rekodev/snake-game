@@ -64,7 +64,7 @@ const LatestScores = () => {
         </span>
       </h2>
       <Table
-        aria-label="Example table with dynamic content"
+        aria-label="Latest scores table"
         bottomContent={
           pages > 0 && (
             <div className="flex w-full justify-center">

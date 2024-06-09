@@ -35,8 +35,26 @@ const columns = [
 ];
 
 const HighScores = () => {
-  const { data, isLoading } = useSWR<Array<User>>("/api/users", fetcher);
-  console.log(data);
+  const { data, isLoading } = useSWR<Array<User>>(
+    "/api/users/high-scores",
+    fetcher,
+  );
+
+  const tableRowClassName = (index: number | undefined) => {
+    if (index === 0) {
+      return "bg-yellow-300 bg-opacity-50";
+    }
+
+    if (index === 1) {
+      return "bg-gray-200 bg-opacity-50";
+    }
+
+    if (index === 2) {
+      return "bg-yellow-700 bg-opacity-50";
+    }
+
+    return "";
+  };
 
   return (
     <section className="my-4 mt-12">
@@ -46,7 +64,7 @@ const HighScores = () => {
           <TrophyIcon />
         </span>
       </h2>
-      <Table aria-label="Example table with dynamic content">
+      <Table aria-label="High scores table">
         <TableHeader columns={columns}>
           {(column) => (
             <TableColumn key={column.key}>{column.label}</TableColumn>
@@ -58,7 +76,10 @@ const HighScores = () => {
           items={data ?? []}
         >
           {(item) => (
-            <TableRow key={item.id}>
+            <TableRow
+              className={tableRowClassName(data?.indexOf(item))}
+              key={item.id}
+            >
               {(columnKey) => {
                 if (columnKey === "number") {
                   return (

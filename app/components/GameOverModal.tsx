@@ -26,23 +26,32 @@ const GameOverModal = ({
 }: Props) => {
   const router = useRouter();
 
-  // TODO: Hook up the submit logic
   const handleSubmit = async () => {
     try {
-      const res = await fetch("/api/scores", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, score }),
-      });
+      const res = await (
+        await fetch("/api/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, score }),
+        })
+      ).json();
 
-      if (res.ok) {
+      if ("error" in res) {
+        console.log(res);
         onOpenChange(false);
-        router.push("/scores");
+        onPlayAgain();
+
+        return;
       }
+
+      onOpenChange(false);
+      router.push("/scores");
     } catch (error) {
       console.error(error);
+      onOpenChange(false);
+      onPlayAgain();
     }
   };
 
@@ -74,7 +83,7 @@ const GameOverModal = ({
               >
                 Play Again
               </Button>
-              <Button color="success" onPress={onClose}>
+              <Button color="success" onPress={handleSubmit}>
                 Submit
               </Button>
             </ModalFooter>

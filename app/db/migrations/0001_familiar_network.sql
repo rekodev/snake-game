@@ -1,0 +1,1 @@
+ALTER TABLE "users" ALTER COLUMN "score" TYPE INTEGER USING score::integer;
