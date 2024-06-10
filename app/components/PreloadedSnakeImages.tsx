@@ -6,7 +6,7 @@ type Props = {
 
 const PreloadedSnakeImages = ({ imageUrls }: Props) => {
   return (
-    <div className="hidden">
+    <div className="relative hidden">
       {imageUrls.map((url) => (
         <SnakeImage key={url} src={url} alt="Snake" />
       ))}

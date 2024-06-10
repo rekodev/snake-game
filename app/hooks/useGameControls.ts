@@ -10,7 +10,6 @@ import { Direction } from "../constants";
 type Props = {
   intervalIdRef: MutableRefObject<NodeJS.Timeout | null>;
   directionRef: MutableRefObject<Direction>;
-  onGameOverModalOpen: () => void;
   currentDirection: Direction;
   isWelcomeModalOpen: boolean;
 };
@@ -18,7 +17,6 @@ type Props = {
 const useGameControls = ({
   intervalIdRef,
   directionRef,
-  onGameOverModalOpen,
   currentDirection,
   isWelcomeModalOpen,
 }: Props) => {
@@ -101,20 +99,13 @@ const useGameControls = ({
     isWelcomeModalOpen,
   ]);
 
-  const handleGameOver = useCallback(() => {
-    clearInterval(intervalIdRef.current as NodeJS.Timeout);
-    setIsGameOver(true);
-    setIsGameStarted(false);
-    onGameOverModalOpen();
-  }, [onGameOverModalOpen, intervalIdRef]);
-
   return {
     isGameStarted,
     isGamePaused,
     isGameOver,
-    setIsGameOver,
+    setIsGameStarted,
     setIsGamePaused,
-    handleGameOver,
+    setIsGameOver,
   };
 };
 

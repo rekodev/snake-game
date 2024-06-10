@@ -1,7 +1,9 @@
 "use client";
 
 import { useDisclosure } from "@nextui-org/modal";
+import { Spinner } from "@nextui-org/spinner";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
+
 import {
   Direction,
   GAME_SPEED,
@@ -9,25 +11,20 @@ import {
   INITIAL_SNAKE_CELLS,
 } from "../constants";
 import { IMAGE_URLS } from "../constants/imageUrls";
-import { HighScoreContext } from "../contexts/HighScoreContext";
 import { NameContext } from "../contexts/NameContext";
 import useGameControls from "../hooks/useGameControls";
-import { GameCell } from "../types";
-import {
-  checkIfGameOver,
-  determineNextSnakeCells,
-  determineTailDirection,
-  generateNewFoodCell,
-} from "../utils";
+import useIsDesktop from "../hooks/useIsDesktop";
+
+import useAdvanceGame from "../hooks/useAdvanceGame";
 import GameBoard from "./GameBoard";
 import GameOverModal from "./GameOverModal";
 import GamePanel from "./GamePanel";
+import NotAvailable from "./pages/NotAvailable";
 import PreloadedSnakeImages from "./PreloadedSnakeImages";
 import WelcomeModal from "./WelcomeModal";
 
 const Game = () => {
   const { name, setName } = useContext(NameContext);
-  const { highScore, setHighScore } = useContext(HighScoreContext);
 
   const [score, setScore] = useState(0);
   const [snakeCells, setSnakeCells] = useState(INITIAL_SNAKE_CELLS);
@@ -37,6 +34,7 @@ const Game = () => {
   const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
   const directionRef = useRef<Direction>(Direction.Right);
 
+  const { isDesktop, isLoading } = useIsDesktop();
   const {
     isOpen: isWelcomeModalOpen,
     onOpen: onWelcomeModalOpen,
@@ -53,82 +51,32 @@ const Game = () => {
     isGamePaused,
     setIsGameOver,
     setIsGamePaused,
-    handleGameOver,
+    setIsGameStarted,
   } = useGameControls({
     directionRef,
     intervalIdRef,
-    onGameOverModalOpen,
     currentDirection: direction,
     isWelcomeModalOpen,
   });
 
-  const setHighScoreIfNew = useCallback(() => {
-    if (score <= highScore) return;
+  const handleGameOver = useCallback(() => {
+    clearInterval(intervalIdRef.current as NodeJS.Timeout);
+    setIsGameOver(true);
+    setIsGameStarted(false);
+    onGameOverModalOpen();
+  }, [onGameOverModalOpen, intervalIdRef, setIsGameStarted, setIsGameOver]);
 
-    setHighScore(score);
-  }, [highScore, setHighScore, score]);
-
-  const eatFood = useCallback(
-    (nextCells: Array<GameCell>) => {
-      const newSnakeCells = [...nextCells];
-      const tail = newSnakeCells[0];
-      const tailDirection = determineTailDirection(newSnakeCells);
-
-      switch (tailDirection) {
-        case Direction.Up:
-          newSnakeCells.unshift({ x: tail.x, y: tail.y - 1 });
-          break;
-        case Direction.Down:
-          newSnakeCells.unshift({ x: tail.x, y: tail.y + 1 });
-          break;
-        case Direction.Left:
-          newSnakeCells.unshift({ x: tail.x - 1, y: tail.y });
-          break;
-        case Direction.Right:
-          newSnakeCells.unshift({ x: tail.x + 1, y: tail.y });
-          break;
-      }
-
-      setScore(score + 1);
-      setFoodCell(generateNewFoodCell(snakeCells));
-      setSnakeCells(newSnakeCells);
-    },
-    [score, setScore, snakeCells, setSnakeCells, setFoodCell],
-  );
-
-  const advanceGame = useCallback(() => {
-    const nextSnakeCells = determineNextSnakeCells(
-      snakeCells,
-      directionRef.current,
-    );
-
-    if (checkIfGameOver(nextSnakeCells)) {
-      setHighScoreIfNew();
-      handleGameOver();
-
-      return;
-    }
-
-    const isEatingFood = nextSnakeCells.some(
-      (cell) => cell.x === foodCell.x && cell.y === foodCell.y,
-    );
-
-    if (isEatingFood) {
-      eatFood(nextSnakeCells);
-    } else {
-      setSnakeCells(nextSnakeCells);
-    }
-
-    setDirection(directionRef.current);
-  }, [
-    snakeCells,
-    setSnakeCells,
+  const { advanceGame } = useAdvanceGame({
+    directionRef,
     setDirection,
-    setHighScoreIfNew,
-    handleGameOver,
+    setFoodCell,
+    setScore,
+    setSnakeCells,
+    snakeCells,
     foodCell,
-    eatFood,
-  ]);
+    score,
+    onGameOver: handleGameOver,
+  });
 
   useEffect(() => {
     if (!isGameStarted || isGamePaused) return;
@@ -152,6 +100,15 @@ const Game = () => {
     setFoodCell(INITIAL_FOOD_CELL);
     setIsGameOver(false);
   };
+
+  if (isLoading)
+    return (
+      <div className="flex h-full w-full flex-1 items-center justify-center">
+        <Spinner color="success" />
+      </div>
+    );
+
+  if (!isDesktop) return <NotAvailable />;
 
   return (
     <>
