@@ -6,8 +6,8 @@ type Props = {
 
 const GameOverlay = ({ isGameStarted }: Props) => {
   return (
-    <Card className="absolute left-0 top-0 flex h-full w-full items-center justify-center bg-transparent p-6">
-      <CardBody className="flex items-center justify-center bg-black bg-opacity-50 p-8">
+    <Card className="absolute left-0 top-0 flex h-full w-full items-center justify-center rounded-none bg-transparent">
+      <CardBody className="z-10 flex items-center justify-center bg-black bg-opacity-50 p-8">
         <p className="text-tiny font-bold uppercase text-white/60">
           {isGameStarted
             ? "Press Esc or Spacebar or hit Play to resume"

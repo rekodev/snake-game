@@ -39,7 +39,6 @@ const GameOverModal = ({
       ).json();
 
       if ("error" in res) {
-        console.log(res);
         onOpenChange(false);
         onPlayAgain();
 

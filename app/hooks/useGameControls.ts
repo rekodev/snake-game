@@ -1,10 +1,4 @@
-import {
-  MutableRefObject,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { MutableRefObject, useEffect, useMemo, useState } from "react";
 import { Direction } from "../constants";
 
 type Props = {

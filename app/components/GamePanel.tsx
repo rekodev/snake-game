@@ -1,8 +1,7 @@
-import React from "react";
-import ScoreCard from "./ScoreCard";
 import { Button } from "@nextui-org/button";
 import PauseIcon from "./icons/PauseIcon";
 import PlayIcon from "./icons/PlayIcon";
+import ScoreCard from "./ScoreCard";
 
 type Props = {
   score: number;
@@ -30,7 +29,7 @@ const GamePanel = ({
   };
 
   return (
-    <div className="absolute top-[-4rem] z-10 flex w-full justify-between">
+    <div className="z-10 flex justify-between">
       <ScoreCard score={score} />{" "}
       <Button
         isDisabled={!isGameStarted}

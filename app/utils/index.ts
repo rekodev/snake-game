@@ -1,10 +1,9 @@
+import { BodyCellPositioning, Direction, GRID_SIZE } from "../constants";
 import { GameCell } from "../types";
-import { BOARD_DIMENSIONS } from "../constants";
-import { BodyCellPositioning, Direction } from "../constants";
 
 export const generateNewFoodCell = (snakeCells: Array<GameCell>): GameCell => {
-  const x = Math.floor(Math.random() * BOARD_DIMENSIONS.height);
-  const y = Math.floor(Math.random() * BOARD_DIMENSIONS.width);
+  const x = Math.floor(Math.random() * GRID_SIZE);
+  const y = Math.floor(Math.random() * GRID_SIZE);
 
   const isSnakeCell = snakeCells.some((cell) => cell.x === x && cell.y === y);
 
@@ -127,9 +126,9 @@ export const checkIfGameOver = (snakeCells: Array<GameCell>) => {
 
   const isOutOfBounds =
     nextHead.x < 0 ||
-    nextHead.x >= BOARD_DIMENSIONS.width ||
+    nextHead.x >= GRID_SIZE ||
     nextHead.y < 0 ||
-    nextHead.y >= BOARD_DIMENSIONS.height;
+    nextHead.y >= GRID_SIZE;
 
   return isCollision || isOutOfBounds;
 };

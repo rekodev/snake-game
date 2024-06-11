@@ -1,13 +1,13 @@
-import { useCallback, useContext, MutableRefObject } from "react";
+import { MutableRefObject, useCallback, useContext } from "react";
+import { Direction } from "../constants";
+import { HighScoreContext } from "../contexts/HighScoreContext";
+import { GameCell } from "../types";
 import {
   checkIfGameOver,
   determineNextSnakeCells,
   determineTailDirection,
   generateNewFoodCell,
 } from "../utils";
-import { Direction } from "../constants";
-import { GameCell } from "../types";
-import { HighScoreContext } from "../contexts/HighScoreContext";
 
 type Props = {
   snakeCells: Array<GameCell>;
@@ -99,7 +99,9 @@ const useAdvanceGame = ({
     eatFood,
   ]);
 
-  return { advanceGame };
+  return {
+    advanceGame,
+  };
 };
 
 export default useAdvanceGame;

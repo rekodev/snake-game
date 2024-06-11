@@ -3,9 +3,10 @@ import Image from "next/image";
 type Props = {
   src: string;
   alt: string;
+  className?: string;
 };
 
-const SnakeImage = ({ src, alt }: Props) => {
+const SnakeImage = ({ src, alt, className }: Props) => {
   return (
     <Image
       sizes="(max-width: 700px) 50px, 50px"
@@ -15,7 +16,7 @@ const SnakeImage = ({ src, alt }: Props) => {
       src={src}
       alt={alt}
       fill
-      className="object-contain"
+      className={`object-contain ${className}`}
     />
   );
 };

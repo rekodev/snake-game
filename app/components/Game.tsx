@@ -10,21 +10,21 @@ import {
   INITIAL_FOOD_CELL,
   INITIAL_SNAKE_CELLS,
 } from "../constants";
-import { IMAGE_URLS } from "../constants/imageUrls";
 import { NameContext } from "../contexts/NameContext";
+import useAdvanceGame from "../hooks/useAdvanceGame";
 import useGameControls from "../hooks/useGameControls";
 import useIsDesktop from "../hooks/useIsDesktop";
+import useLoadAssets from "../hooks/useLoadAssets";
 
-import useAdvanceGame from "../hooks/useAdvanceGame";
 import GameBoard from "./GameBoard";
 import GameOverModal from "./GameOverModal";
 import GamePanel from "./GamePanel";
 import NotAvailable from "./pages/NotAvailable";
-import PreloadedSnakeImages from "./PreloadedSnakeImages";
 import WelcomeModal from "./WelcomeModal";
 
 const Game = () => {
   const { name, setName } = useContext(NameContext);
+  const { assets, isLoading: isAssetsLoading } = useLoadAssets();
 
   const [score, setScore] = useState(0);
   const [snakeCells, setSnakeCells] = useState(INITIAL_SNAKE_CELLS);
@@ -34,7 +34,7 @@ const Game = () => {
   const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
   const directionRef = useRef<Direction>(Direction.Right);
 
-  const { isDesktop, isLoading } = useIsDesktop();
+  const { isDesktop, isLoading: isDesktopLoading } = useIsDesktop();
   const {
     isOpen: isWelcomeModalOpen,
     onOpen: onWelcomeModalOpen,
@@ -101,7 +101,7 @@ const Game = () => {
     setIsGameOver(false);
   };
 
-  if (isLoading)
+  if (isDesktopLoading || isAssetsLoading)
     return (
       <div className="flex h-full w-full flex-1 items-center justify-center">
         <Spinner color="success" />
@@ -112,24 +112,26 @@ const Game = () => {
 
   return (
     <>
-      <section className="relative mx-auto mt-16 flex aspect-square max-h-[70vh] flex-1 flex-col items-center justify-start gap-4">
-        <GamePanel
-          score={score}
-          intervalId={intervalIdRef.current as NodeJS.Timeout}
-          isGameStarted={isGameStarted}
-          isGamePaused={isGamePaused}
-          setIsGamePaused={setIsGamePaused}
-        />
-        <GameBoard
-          snakeCells={snakeCells}
-          isGameStarted={isGameStarted}
-          isGamePaused={isGamePaused}
-          direction={direction}
-          foodCell={foodCell}
-        />
+      <section className="relative mx-auto flex aspect-square flex-1 flex-col items-center justify-start gap-4">
+        <div className="flex flex-col gap-4">
+          <GamePanel
+            score={score}
+            intervalId={intervalIdRef.current as NodeJS.Timeout}
+            isGameStarted={isGameStarted}
+            isGamePaused={isGamePaused}
+            setIsGamePaused={setIsGamePaused}
+          />
+          <GameBoard
+            assets={assets}
+            snakeCells={snakeCells}
+            foodCell={foodCell}
+            isGameStarted={isGameStarted}
+            isGamePaused={isGamePaused}
+            direction={direction}
+          />
+        </div>
       </section>
 
-      <PreloadedSnakeImages imageUrls={IMAGE_URLS} />
       <WelcomeModal
         isOpen={isWelcomeModalOpen}
         onOpenChange={onWelcomeModalOpenChange}

@@ -9,11 +9,12 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
 } from "@nextui-org/navbar";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import SnakeLogo from "./SnakeLogo";
-import { ThemeSwitcher } from "./ThemeSwitcher";
 import { useState } from "react";
+
+import { ThemeSwitcher } from "./ThemeSwitcher";
 
 const navLinks = [
   {
@@ -49,7 +50,12 @@ const Header = () => {
           className="cursor-pointer gap-2"
           onClick={() => router.push("/")}
         >
-          <SnakeLogo />
+          <Image
+            src="/images/snake_logo.png"
+            alt="Snake Logo"
+            width={50}
+            height={50}
+          />
           <p className="font-bold text-inherit">Snake Game</p>
         </NavbarBrand>
       </NavbarContent>
