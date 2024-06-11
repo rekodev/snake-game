@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 
+const SMALLER_CANVAS_SIZE = 480;
+const LARGER_CANVAS_SIZE = 645;
+
 const useResponsiveSize = () => {
   const [canvasSize, setCanvasSize] = useState(650);
 
@@ -9,9 +12,9 @@ const useResponsiveSize = () => {
       const screenHeight = window.innerHeight;
 
       if (screenWidth >= 1024 && screenHeight >= 800) {
-        setCanvasSize(645);
+        setCanvasSize(LARGER_CANVAS_SIZE);
       } else {
-        setCanvasSize(450);
+        setCanvasSize(SMALLER_CANVAS_SIZE);
       }
     };
 
