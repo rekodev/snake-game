@@ -78,12 +78,14 @@ const GameBoard = ({
   }, [drawGameBoard]);
 
   return (
-    <div className="relative flex justify-center rounded-lg bg-green-400 p-4">
-      <canvas ref={canvasRef} />
+    <div className="flex justify-center rounded-lg bg-green-400 p-4">
+      <div className="relative">
+        <canvas ref={canvasRef} />
 
-      {(!isGameStarted || isGamePaused) && (
-        <GameOverlay isGameStarted={isGameStarted} />
-      )}
+        {(!isGameStarted || isGamePaused) && (
+          <GameOverlay isGameStarted={isGameStarted} />
+        )}
+      </div>
     </div>
   );
 };
