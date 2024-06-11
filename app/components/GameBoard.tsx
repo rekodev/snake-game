@@ -1,43 +1,85 @@
-import { BOARD_DIMENSIONS, Direction, ROW_HEIGHT } from "../constants";
+import { useCallback, useEffect, useMemo, useRef } from "react";
+
+import useDrawAssets from "../hooks/useDrawAssets";
+import { GameAssets } from "../hooks/useLoadAssets";
+
+import { Direction, GRID_SIZE } from "../constants";
 import { GameCell } from "../types";
-import GameBoardCell from "./GameBoardCell";
+
+import useResponsiveSize from "../hooks/useResponsiveSize";
+import { drawBoard } from "../utils/drawBoard";
 import GameOverlay from "./GameOverlay";
 
 type Props = {
+  assets: GameAssets | undefined;
   snakeCells: Array<GameCell>;
+  foodCell: GameCell;
+  direction: Direction;
   isGameStarted: boolean;
   isGamePaused: boolean;
-  direction: Direction;
-  foodCell: GameCell;
 };
 
 const GameBoard = ({
+  assets,
   snakeCells,
+  foodCell,
+  direction,
   isGameStarted,
   isGamePaused,
-  direction,
-  foodCell,
 }: Props) => {
-  const renderGameBoardRow = ({ rowIndex }: { rowIndex: number }) => (
-    <div key={rowIndex} className="flex w-full" style={{ height: ROW_HEIGHT }}>
-      {Array.from({ length: BOARD_DIMENSIONS.width }).map((_, index) => (
-        <GameBoardCell
-          key={index}
-          snakeCells={snakeCells}
-          foodCell={foodCell}
-          rowIndex={rowIndex}
-          cellIndex={index}
-          direction={direction}
-        />
-      ))}
-    </div>
-  );
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const canvasSize = useResponsiveSize();
+  const cellSize = useMemo(() => canvasSize / GRID_SIZE, [canvasSize]);
+
+  const { drawHead, drawBody, drawTail, drawFood } = useDrawAssets({
+    assets,
+    snakeCells,
+    direction,
+    canvasRef,
+    cellSize,
+  });
+
+  const drawGameBoard = useCallback(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+
+    if (!canvas || !ctx) return;
+
+    canvas.width = canvasSize;
+    canvas.height = canvasSize;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    drawBoard(canvas, ctx, cellSize);
+    drawFood(foodCell);
+
+    snakeCells.forEach((cell, index) => {
+      const isTail = index === 0;
+      const isHead = index === snakeCells.length - 1;
+      const isBody = !isTail && !isHead;
+
+      if (isHead) drawHead(cell);
+      if (isBody) drawBody(cell, index);
+      if (isTail) drawTail(cell);
+    });
+  }, [
+    canvasSize,
+    cellSize,
+    drawBody,
+    drawHead,
+    drawTail,
+    drawFood,
+    foodCell,
+    snakeCells,
+  ]);
+
+  useEffect(() => {
+    drawGameBoard();
+  }, [drawGameBoard]);
 
   return (
-    <div className="relative aspect-square w-full rounded-lg bg-primary p-6">
-      {Array.from({ length: BOARD_DIMENSIONS.height }).map((_, index) =>
-        renderGameBoardRow({ rowIndex: index }),
-      )}
+    <div className="relative flex justify-center rounded-lg bg-green-400 p-4">
+      <canvas ref={canvasRef} />
 
       {(!isGameStarted || isGamePaused) && (
         <GameOverlay isGameStarted={isGameStarted} />

@@ -5,16 +5,21 @@ import {
   NavbarBrand,
   NavbarContent,
   NavbarItem,
+  NavbarMenu,
+  NavbarMenuItem,
+  NavbarMenuToggle,
 } from "@nextui-org/navbar";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import SnakeLogo from "./SnakeLogo";
+import { useState } from "react";
+
 import { ThemeSwitcher } from "./ThemeSwitcher";
 
 const navLinks = [
   {
     href: "/",
-    text: "Home",
+    text: "Game",
   },
   {
     href: "/scores",
@@ -32,15 +37,29 @@ const Header = () => {
   const pathname = usePathname();
   const router = useRouter();
 
+  const [isMenuOpen] = useState(false);
+
   return (
     <Navbar isBordered>
-      <NavbarBrand
-        className="cursor-pointer gap-2"
-        onClick={() => router.push("/")}
-      >
-        <SnakeLogo />
-        <p className="font-bold text-inherit">Snake Game</p>
-      </NavbarBrand>
+      <NavbarContent>
+        <NavbarMenuToggle
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          className="sm:hidden"
+        />
+        <NavbarBrand
+          className="cursor-pointer gap-2"
+          onClick={() => router.push("/")}
+        >
+          <Image
+            src="/images/snake_logo.png"
+            alt="Snake Logo"
+            width={50}
+            height={50}
+          />
+          <p className="font-bold text-inherit">Snake Game</p>
+        </NavbarBrand>
+      </NavbarContent>
+
       <NavbarContent className="hidden gap-4 sm:flex" justify="center">
         {navLinks.map(({ href, text }) => (
           <NavbarItem key={href} isActive={isActive(href, pathname)}>
@@ -53,6 +72,19 @@ const Header = () => {
           <ThemeSwitcher />
         </NavbarItem>
       </NavbarContent>
+
+      <NavbarMenu>
+        {navLinks.map((item, index) => (
+          <NavbarMenuItem
+            key={`${item.text}-${index}`}
+            isActive={isActive(item.href, pathname)}
+          >
+            <Link className="w-full text-xl" href={item.href}>
+              {item.text}
+            </Link>
+          </NavbarMenuItem>
+        ))}
+      </NavbarMenu>
     </Navbar>
   );
 };
