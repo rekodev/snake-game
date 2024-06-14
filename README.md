@@ -6,6 +6,8 @@ This is my final project for the CS50 course. It is a classic Snake game built w
 
 You can play it by clicking [this link](https://snake-game-react-snowy.vercel.app/).
 
+Video demo: [https://youtu.be/ptQHiLq_ALM](https://youtu.be/ptQHiLq_ALM)
+
 ## Table of Contents
 - [Overview](#overview)
 - [Features](#features)
