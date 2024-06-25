@@ -9,24 +9,28 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@nextui-org/modal";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 type Props = {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   name: string;
-  setName: (name: string) => void;
+  setName: Dispatch<SetStateAction<string>>;
 };
 
 const WelcomeModal = ({ isOpen, onOpenChange, name, setName }: Props) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const isInvalid = name.length < 2 || name.length > 20;
+  const isInvalid = name.trim().length < 2 || name.trim().length > 20;
 
   const handleSubmit = (onClose: () => void) => {
     setIsSubmitted(true);
 
-    if (isInvalid) return;
+    if (isInvalid) {
+      setName((prev) => prev.trim());
+
+      return;
+    }
 
     onClose();
   };

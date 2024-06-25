@@ -6,7 +6,7 @@ import { GameAssets } from "../hooks/useLoadAssets";
 import { Direction, GRID_SIZE } from "../constants";
 import { GameCell } from "../types";
 
-import useResponsiveSize from "../hooks/useResponsiveSize";
+import useResponsiveCanvasSize from "../hooks/useResponsiveCanvasSize";
 import { drawBoard } from "../utils/drawBoard";
 import GameOverlay from "./GameOverlay";
 
@@ -28,7 +28,7 @@ const GameBoard = ({
   isGamePaused,
 }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const canvasSize = useResponsiveSize();
+  const canvasSize = useResponsiveCanvasSize();
   const cellSize = useMemo(() => canvasSize / GRID_SIZE, [canvasSize]);
 
   const { drawHead, drawBody, drawTail, drawFood } = useDrawAssets({
