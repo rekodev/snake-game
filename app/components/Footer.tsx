@@ -7,7 +7,7 @@ const Footer = () => {
         <p className="mx-auto flex">
           Made by rekodev&nbsp;
           <span>
-            <a href="http://github.com/rekodev">
+            <a target="_blank" href="http://github.com/rekodev">
               <GitHubIcon />
             </a>
           </span>
