@@ -112,7 +112,7 @@ const Game = () => {
 
   return (
     <>
-      <section className="relative mx-auto flex aspect-square flex-1 flex-col items-center justify-start gap-4">
+      <section className="relative flex flex-1 flex-col items-center justify-start gap-4">
         <div className="flex flex-col gap-4">
           <GamePanel
             score={score}
