@@ -1,10 +1,16 @@
 "use client";
 
-import { createContext, useState, ReactNode } from "react";
+import {
+  createContext,
+  useState,
+  ReactNode,
+  Dispatch,
+  SetStateAction,
+} from "react";
 
 type ContextType = {
   name: string;
-  setName: (name: string) => void;
+  setName: Dispatch<SetStateAction<string>>;
 };
 
 const NameContext = createContext<ContextType>({ name: "", setName: () => {} });
